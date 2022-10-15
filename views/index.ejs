@@ -7,5 +7,30 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <hr>
+      <h2>Get user to initiate connection to Metamask</h2>
+        <button class="enableEthereumButton">Connect to Metamask</button>
+        <h3>Account: <span class="showAccount"></span></h3>
+        <h3>Chain ID: <span class="showChainId"></span></h3>
+    <hr>
+      <h2>Prepare JWT Token for Signing</h2>
+        <form id="prepareJWT">
+          <p>Subject Address:</p>
+          <input type="text" id="subjectAddress"/>
+          <p>Audience Address:</p>
+          <input type="text" id="audienceAddress"/>
+          <br>
+          <button>Prepare JWT</button>
+        </form>
+        <h3>Issuer DID: <span class="issuerDID"></span></h3>
+        <h3>Subject DID: <span class="subjectDID"></span></h3>
+        <h3>Audience DID: <span class="audienceDID"></span></h3>
+        <h3>Timestamp: <span class="timestamp"></span></h3>
+    <hr>
+      <h2>Sign JWT Token</h2>
+        <button class="signJWT">Sign JWT</button>
+        <h3>Signed with account: <span class="signingAccount"></span></h3>
+        <h3>Signed JWT: <span class="signedJWT"></span></h3>
+    <script src="javascripts/bundle.js"></script>
   </body>
 </html>
