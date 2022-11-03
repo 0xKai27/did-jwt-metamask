@@ -9,28 +9,60 @@
     <p>Welcome to <%= title %></p>
     <hr>
       <h2>Get user to initiate connection to Metamask</h2>
+        <ul>
+          <li>Ensure Metamask is connected to Ethers.js</li>
+        </ul>
         <button class="enableEthereumButton">Connect to Metamask</button>
         <h3>Account: <span class="showAccount"></span></h3>
         <h3>Chain ID: <span class="showChainId"></span></h3>
     <hr>
-      <h2>Prepare JWT Token for Signing</h2>
-        <form id="prepareJWT">
+      <h2>Configure subject and audience DIDs</h2>
+        <ul>
+          <li>Set the Subject address to be used to generate the subject DID</li>
+          <li>Set the Audience address to be used to generate the audience DID</li>
+        </ul>
+        <form id="configureAddresses">
           <p>Subject Address:</p>
           <input type="text" id="subjectAddress"/>
           <p>Audience Address:</p>
           <input type="text" id="audienceAddress"/>
           <br>
-          <button>Prepare JWT</button>
+          <button>Confirm address</button>
         </form>
-        <h3>Issuer DID: <span class="issuerDID"></span></h3>
         <h3>Subject DID: <span class="subjectDID"></span></h3>
         <h3>Audience DID: <span class="audienceDID"></span></h3>
-        <h3>Timestamp: <span class="timestamp"></span></h3>
+    <hr>
+      <h2>Prepare JWT Token for Signing</h2>
+        <ul>
+          <li>Build the JWT message</li>
+        </ul>
+        <button class="prepareJWT">Build JWT Message</button>
+        <h3>Issuer DID: <span class="issuerDID"></span></h3>
     <hr>
       <h2>Sign JWT Token</h2>
+        <ul>
+          <li>Create a signing delegate for the connected account</li>
+          <li>Sign the message with the delegate</li>
+          <li>Get the user to sign the JWT message</li>
+          <li>Hash the raw signature of the signed JWT message</li>
+          <li>Use the hash to sign the JWT token</li>
+        </ul>
         <button class="signJWT">Sign JWT</button>
-        <h3>Signed with account: <span class="signingAccount"></span></h3>
+        <h3>Connected Metamask Account: <span class="connectedMetamaskAccount"></span></h3>
+        <h3>Delegate Signer Account: <span class="delegateSigner"></span></h3>
+        <h3>Delegate Signer Identifier: <span class="delegateSignerIdentifier"></span></h3>
         <h3>Signed JWT: <span class="signedJWT"></span></h3>
+    <hr>
+      <h2>Validate JWT Token</h2>
+      <ul>
+        <li>Decode the JWT Token</li>
+        <li>Form an the JWT message from decoded JWT token (including the JWT timestamp)</li>
+        <li>With the issuer DID the reformed JWT message, generate a raw signature using PKC</li>
+        <li>Compare the raw signatures to validate</li>
+      </ul>
+      <button class="validateJWT">Validate JWT</button>
+      <h3>Decoded JWT by did-jwt: <span class="decodedJWT"></span></h3>
+      <h3>Timestamp: <span class="timestamp"></span></h3>
     <script src="javascripts/bundle.js"></script>
   </body>
 </html>

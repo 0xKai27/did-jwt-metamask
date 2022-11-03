@@ -63,4 +63,4 @@ provider.on("network", (newNetwork, oldNetwork) => {
     }
 });
 
-export { provider, signer};
+export { provider, signer };
