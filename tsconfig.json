@@ -9,8 +9,8 @@
     "resolveJsonModule": true
   },
   "files": [
-    "./jwt/sign.ts",
     "./ethers/signer.ts",
+    "./jwt/sign.ts",
     "./jwt/verify.ts"
   ]
 }

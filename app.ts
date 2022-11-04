@@ -1,10 +1,19 @@
 import createError from 'http-errors';
 import express from 'express';
+import session from 'express-session';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 
-import { indexRouter } from './routes/index';
+import { issuerRouter } from './routes/issuer';
+import { audienceRouter } from './routes/audience';
+import { apiRouter } from './routes/api';
+
+declare module 'express-session' {
+  interface SessionData {
+    signedJWT: string,
+  }
+}
 
 const app: express.Application = express();
 
@@ -19,7 +28,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+app.use(
+  session({
+    name: 'DID JWT Session',
+    secret: 'keyboard cat',
+    resave: true,
+    saveUninitialized: true,
+  })
+)
+
+app.use('/', issuerRouter);
+app.use('/audience', audienceRouter);
+app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req: express.Request, res: express.Response, next: express.NextFunction) {

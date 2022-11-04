@@ -7,6 +7,9 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <a href="/audience">
+      <button class="audienceApp">Audience App</button>
+    </a>
     <hr>
       <h2>Get user to initiate connection to Metamask</h2>
         <ul>
@@ -29,37 +32,31 @@
           <br>
           <button>Confirm address</button>
         </form>
-        <h3>Subject DID: <span class="subjectDID"></span></h3>
-        <h3>Audience DID: <span class="audienceDID"></span></h3>
+        <h3>Subject DID: <span id="subjectDID"></span></h3>
+        <h3>Audience DID: <span id="audienceDID"></span></h3>
     <hr>
       <h2>Prepare JWT Token for Signing</h2>
         <ul>
           <li>Build the JWT message</li>
         </ul>
-        <button class="prepareJWT">Build JWT Message</button>
-        <h3>Issuer DID: <span class="issuerDID"></span></h3>
+        <form id="prepareJWT">
+          <p>Private Claim:</p>
+          <input type="text" id="privateClaim"/>
+          <br>
+          <button>Build JWT Message</button>
+        </form>
+        <h3>Issuer DID: <span id="issuerDID"></span></h3>
     <hr>
       <h2>Sign JWT Token</h2>
         <ul>
           <li>Create a signing delegate for the connected account</li>
           <li>Sign the message with the delegate</li>
         </ul>
-        <button class="signJWT">Sign JWT</button>
-        <h3>Connected Metamask Account: <span class="connectedMetamaskAccount"></span></h3>
-        <h3>Delegate Signer Account: <span class="delegateSigner"></span></h3>
-        <h3>Delegate Signer Identifier: <span class="delegateSignerIdentifier"></span></h3>
-        <h3>Signed JWT: <span class="signedJWT"></span></h3>
-    <hr>
-      <h2>Validate JWT Token</h2>
-      <ul>
-        <li>Decode the JWT Token</li>
-        <li>Form an the JWT message from decoded JWT token (including the JWT timestamp)</li>
-        <li>With the issuer DID the reformed JWT message, generate a raw signature using PKC</li>
-        <li>Compare the raw signatures to validate</li>
-      </ul>
-      <button class="validateJWT">Validate JWT</button>
-      <h3>Decoded JWT by did-jwt: <span class="decodedJWT"></span></h3>
-      <h3>Timestamp: <span class="timestamp"></span></h3>
-    <script src="javascripts/bundle.js"></script>
+        <button id="signJWT">Sign JWT</button>
+        <h3>Connected Metamask Account: <span id="connectedMetamaskAccount"></span></h3>
+        <h3>Delegate Signer Account: <span id="delegateSigner"></span></h3>
+        <h3>Delegate Signer Identifier: <span id="delegateSignerIdentifier"></span></h3>
+        <h3>Signed JWT: <span id="signedJWT"></span></h3>
+    <script src="javascripts/issuerBundle.js"></script>
   </body>
 </html>

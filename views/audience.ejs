@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <a href="/">
+        <button class="audienceApp">Issuer App</button>
+    </a>
+    <hr>
+      <h2>Connect to Metamask with Audience wallet</h2>
+        <ul>
+          <li>Ensure Metamask is connected to Ethers.js</li>
+        </ul>
+        <button class="enableEthereumButton">Connect to Metamask</button>
+        <h3>Account: <span class="showAccount"></span></h3>
+        <h3>Chain ID: <span class="showChainId"></span></h3>
+    <hr>
+      <h2>Configure audience DID</h2>
+      <ul>
+        <li>Process the audience DID</li>
+      </ul>
+      <form id="configureAudience">
+        <p>Audience Address:</p>
+        <input type="text" id="audienceAddressForm"/>
+        <br>
+        <button>Confirm audience</button>
+      </form>
+      <h3>Audience Address: <span id="audienceAddress"></span></h3>
+    <hr>
+      <h2>Validate JWT</h2>
+        <ul>
+          <li>Process the audience DID</li>
+          <li>Get the signed JWT from storage</li>
+          <li>Validate JWT with audience DID</li>
+        </ul>
+        <button id="validateJWT">Validate JWT</button>
+        <h3>Verified: <span id="verifiedBool"></span></h3>
+    <script src="javascripts/audienceBundle.js"></script>
+  </body>
+</html>
