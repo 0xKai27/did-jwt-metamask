@@ -1,8 +1,14 @@
 # Implementing JWT 2 party issuance/verification with the Ether DID Registry
 
-This project is a sample implementation of issuing and verifying a claim on a subject between the issuer and audience (i.e. validator).
+This project is a sample implementation of issuing and verifying a claim on a subject. It comprises of 3 logically separate stages:
+* Issuance of JWT with a private claim by the Issuer
+* Adding of JWT to Subject DID Document by the Subject
+* Validation of Subject DID Document and JWT payload by the Audience
 
-Typescript implementation of Express using EJS. This repo has been modified from `express-generator` to enable prototyping of TypeScript applications using Express.
+Views are separated according to the above whereby each page requires you to switch to the relevant role on Metamask.
+* "/": Issuer application for preparing and signing the JWT as an Issuer
+* "/subject": Subject aplication that enables the subject to save the Issuer signed JWT to their DID Document
+* "/audience": Audience application where a validator can choose validate against Subject DID Doc or directly with the JWT
 
 To run the application, user will have to run:
 ```
