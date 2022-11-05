@@ -1,4 +1,4 @@
-# Implementing JWT 2 party issuance/verification with the Ether DID Registry
+# Implementing JWT multiparty issuance/verification with the Ether DID Registry
 
 This project is a sample implementation of issuing and verifying a claim on a subject. It comprises of 3 logically separate stages:
 * Issuance of JWT with a private claim by the Issuer
