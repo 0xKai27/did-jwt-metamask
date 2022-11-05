@@ -13,21 +13,39 @@ const did_resolver_1 = require("did-resolver");
 const ethr_did_resolver_1 = require("ethr-did-resolver");
 const ethr_did_1 = require("ethr-did");
 const signer_1 = require("../ethers/signer");
-const validateJWTButton = document.querySelector('#validateJWT');
+const ethers_1 = require("ethers");
+// UI Section: "Get the signed JWT"
+const getJWTButton = document.querySelector('#getJWT');
+const signedJWTSpan = document.querySelector('#signedJWT');
+// UI Section: 
 const configureAudienceForm = document.querySelector('#configureAudience');
 const audienceAddressHTML = document.querySelector('#audienceAddressForm');
 const audienceAddressSpan = document.querySelector('#audienceAddress');
+// UI Section: "Validate Subject DID Doc contains the JWT"
+const validateSubjectDidDocButton = document.querySelector('#validateSubjectDidDoc');
+const publicKeyHexSpan = document.querySelector('#publicKeyHex');
+const hexStringSpan = document.querySelector('#hexString');
+const subjectValidatedSpan = document.querySelector('#subjectValidated');
+// UI Section: Validate JWT Payload
+const validateJWTButton = document.querySelector('#validateJWT');
+const privateClaimSpan = document.querySelector('#privateClaim');
 const verifiedBoolSpan = document.querySelector('#verifiedBool');
+const registryAddress = '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b';
 let audienceAddress;
+let signedJWT;
 // getResolver will return an object with a key/value pair of { "ethr": resolver } where resolver is a function used by the generic did resolver.
 const providerConfig = {
     networks: [
         { name: "0x5", provider: signer_1.provider },
     ],
-    registry: '0xdCa7EF03e98e0DC2B855bE647C39ABe984fcF21B' // optional as ethr-did-resolver sets this up as default
+    registry: registryAddress // optional as ethr-did-resolver sets this up as default
 };
 const ethrDidResolver = (0, ethr_did_resolver_1.getResolver)(providerConfig);
 const didResolver = new did_resolver_1.Resolver(ethrDidResolver);
+const DidReg = new ethers_1.ethers.Contract(registryAddress, ethr_did_resolver_1.EthereumDIDRegistry.abi, signer_1.provider);
+getJWTButton.addEventListener('click', () => __awaiter(void 0, void 0, void 0, function* () {
+    yield getJWT();
+}));
 // Configure the audience address used to validate the JWT
 configureAudienceForm.addEventListener('submit', (e) => __awaiter(void 0, void 0, void 0, function* () {
     e.preventDefault();
@@ -39,17 +57,51 @@ configureAudienceForm.addEventListener('submit', (e) => __awaiter(void 0, void 0
     }
     audienceAddressSpan.innerHTML = audienceAddress;
 }));
+validateSubjectDidDocButton.addEventListener('click', () => __awaiter(void 0, void 0, void 0, function* () {
+    yield verifySubjectAttribute();
+}));
 // Allow user to trigger the validation
 validateJWTButton.addEventListener('click', () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('Clicked');
     yield validateJWT();
 }));
-function validateJWT() {
+function getJWT() {
     return __awaiter(this, void 0, void 0, function* () {
-        yield verifyIssuerDelegateSigner();
-        // await resolveDidDoc();
+        // Get the JWT from user storage (session in this case)
+        signedJWT = yield fetch('/api/getJWT').then((res) => __awaiter(this, void 0, void 0, function* () {
+            const message = yield res.text();
+            return JSON.parse(message).message;
+        }));
+        signedJWTSpan.innerHTML = signedJWT;
     });
 }
+;
+function validateJWT() {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield verifySubjectAttribute();
+        yield verifyIssuerDelegateSigner();
+    });
+}
+;
+function verifySubjectAttribute() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let subjectAddress = 'did:ethr:0x5:0xDBB3d90156fC23c28C709eB68af8403836951AF8';
+        const subjectDidDoc = yield didResolver.resolve(subjectAddress);
+        console.debug(subjectDidDoc);
+        for (const method of subjectDidDoc.didDocument.verificationMethod) {
+            if (!method.publicKeyHex) {
+                continue;
+            }
+            let publiKeyUtf8 = ethers_1.ethers.utils.toUtf8String(`0x${method.publicKeyHex}`);
+            if (publiKeyUtf8 === signedJWT) {
+                publicKeyHexSpan.innerHTML = JSON.stringify(method.publicKeyHex);
+                hexStringSpan.innerHTML = publiKeyUtf8;
+                subjectValidatedSpan.innerHTML = "Found Matching Public Key";
+            }
+        }
+    });
+}
+;
 function verifyIssuerDelegateSigner() {
     return __awaiter(this, void 0, void 0, function* () {
         // Get the Metamask configured chainId
@@ -67,14 +119,6 @@ function verifyIssuerDelegateSigner() {
         console.log(`Verify JWT:`);
         console.debug(JWTVerified);
         verifiedBoolSpan.innerHTML = JSON.stringify(JWTVerified.verified);
+        privateClaimSpan.innerHTML = JSON.stringify(JWTVerified.payload.privateClaim);
     });
 }
-// async function resolveDidDoc() {
-//     // get the subjectDID
-//     // Resolve the document
-//     let doc = await didResolver.resolve(subjectDid.did);
-//     console.log(`DID Document:`)
-//     console.debug(doc);
-//     // decodedJWTSpan.innerHTML = decoded.data.toString();
-//     // timestampSpan.innerHTML = `Number - ${issuedAt.toString()} | UTC - ${(new Date(issuedAt*1000)).toUTCString()}`;
-// }

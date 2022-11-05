@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <a href="/">
+        <button class="issuerApp">Issuer App</button>
+    </a>
+    <a href="/subject">
+        <button class="subjectApp">Subject App</button>
+    </a>
+    <a href="/audience">
+        <button class="audienceApp">Audience App</button>
+    </a>
+    <hr>
+      <h2>Connect to Metamask with Subject wallet</h2>
+        <ul>
+          <li>Ensure Metamask is connected to Ethers.js</li>
+        </ul>
+        <button class="enableEthereumButton">Connect to Metamask</button>
+        <h3>Account: <span class="showAccount"></span></h3>
+        <h3>Chain ID: <span class="showChainId"></span></h3>
+    <hr>
+      <h2>Get the signed JWT</h2>
+      <ul>
+        <li>Import the JWT from local storage OR continue from issuance flow</li>
+      </ul>
+      <button id="getJWT">Get Issued JWT</button>
+      <h3>JWT: <span id="signedJWT"></span></h3>
+    <hr>
+      <h2>Add JWT to Subject DID Document</h2>
+        <ul>
+          <li>Allow Subject to decide whther to store on-chain</li>
+          <li>Add JWT as an attribute to Subject DID document</li>
+          <li>Subject to sign transaction</li>
+        </ul>
+        <button id="addJWT">Add JWT</button>
+        <h3>Tx Receipt: <span id="txReceipt"></span></h3>
+    <script src="javascripts/subjectBundle.js"></script>
+  </body>
+</html>

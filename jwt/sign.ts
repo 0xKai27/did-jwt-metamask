@@ -78,7 +78,7 @@ async function processDid() {
     chainNameOrId = (await ethersProvider.getNetwork()).chainId;
 
     // Check parameters for address else use default addreses per Hardhat default accounts 
-    subjectAddress = (subjectAddress === '') ? '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' : subjectAddress;
+    subjectAddress = (subjectAddress === '') ? '0xDBB3d90156fC23c28C709eB68af8403836951AF8' : subjectAddress;
     audienceAddress = (audienceAddress === '') ? '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' : audienceAddress;
 
     // Process the accounts
