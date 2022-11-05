@@ -8,7 +8,7 @@ This project is a sample implementation of issuing and verifying a claim on a su
 Views are separated according to the above whereby each page requires you to switch to the relevant role on Metamask.
 * "/": Issuer application for preparing and signing the JWT as an Issuer
 * "/subject": Subject aplication that enables the subject to save the Issuer signed JWT to their DID Document
-* "/audience": Audience application where a validator can choose validate against Subject DID Doc or directly with the JWT
+* "/audience": Audience application where a validator can choose validate against Subject DID Doc directly or use the convenience library
 
 To run the application, user will have to run:
 ```

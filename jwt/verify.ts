@@ -115,15 +115,6 @@ async function verifyIssuerDelegateSigner() {
     // Process the accounts
     const audienceDid = new EthrDID({identifier: audienceAddress, provider: ethersProvider, chainNameOrId});
 
-    // Get the JWT from user storage (session in this case)
-    let signedJWT = await fetch('/api/getJWT').then(async (res) => {
-        const message = await res.text();
-        return JSON.parse(message).message;
-    })
-
-    console.log(`signed JWT:`)
-    console.debug(signedJWT);
-
     const JWTVerified = await audienceDid.verifyJWT(signedJWT, didResolver);
 
     console.log(`Verify JWT:`)
