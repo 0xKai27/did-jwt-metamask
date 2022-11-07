@@ -49,9 +49,15 @@
         <li>Get the Subject DID Doc</li>
         <li>Scan the DID Doc for Public Hex Key matching JWT</li>
       </ul>
-      <button id="validateSubjectDidDoc">Validate Subject DID Doc</button>
+      <form id="validateSubjectDidDoc">
+        <p>Subject Address:</p>
+        <input type="text" id="subjectAddressForm"/>
+        <br>
+        <button>Validate Subject DID Doc</button>
+      </form>
       <h3>DID Doc Public Key Hex: <span id="publicKeyHex"></span></h3>
       <h3>Public Key Hex to String: <span id="hexString"></span></h3>
+      <h3>Private Claim Extracted from Public Key Hex: <span id="hexPrivateClaim"></span></h3>
       <h3>Subject DID Doc and JWT match: <span id="subjectValidated"></span></h3>
     <hr>
       <h2>Validate JWT Payload</h2>

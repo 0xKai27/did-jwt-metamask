@@ -16,9 +16,11 @@ const configureAudienceForm = document.querySelector('#configureAudience') as HT
 const audienceAddressHTML = document.querySelector('#audienceAddressForm') as HTMLFormElement;
 const audienceAddressSpan = document.querySelector('#audienceAddress') as HTMLSpanElement;
 // UI Section: "Validate Subject DID Doc contains the JWT"
-const validateSubjectDidDocButton = document.querySelector('#validateSubjectDidDoc') as HTMLButtonElement;
+const validateSubjectDidDocForm = document.querySelector('#validateSubjectDidDoc') as HTMLFormElement;
+const subjectAddressFormHTML = document.querySelector('#subjectAddressForm') as HTMLFormElement;
 const publicKeyHexSpan = document.querySelector('#publicKeyHex') as HTMLSpanElement;
 const hexStringSpan = document.querySelector('#hexString') as HTMLSpanElement;
+const hexPrivateClaimSpan = document.querySelector('#hexPrivateClaim') as HTMLSpanElement;
 const subjectValidatedSpan = document.querySelector('#subjectValidated') as HTMLSpanElement;
 // UI Section: Validate JWT Payload
 const validateJWTButton = document.querySelector('#validateJWT') as HTMLButtonElement;
@@ -58,13 +60,17 @@ configureAudienceForm.addEventListener('submit', async (e) => {
     
 })
 
-validateSubjectDidDocButton.addEventListener('click', async () => {
-    await verifySubjectAttribute();
+validateSubjectDidDocForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    let subjectAddress = (subjectAddressFormHTML.value === '') ? '0xDBB3d90156fC23c28C709eB68af8403836951AF8' : subjectAddressFormHTML.value;
+
+    await verifySubjectAttribute(subjectAddress);
 })
 
 // Allow user to trigger the validation
 validateJWTButton.addEventListener('click', async () => {
-    await validateJWT();
+    await verifyIssuerDelegateSigner();
 });
 
 async function getJWT() {
@@ -77,16 +83,13 @@ async function getJWT() {
     signedJWTSpan.innerHTML = signedJWT;
 };
 
-async function validateJWT() {
-    await verifySubjectAttribute();
-    await verifyIssuerDelegateSigner();
-};
+async function verifySubjectAttribute(subjectAddress: string) {
+    // Get the Metamask configured chainId
+    let chainNameOrId = (await ethersProvider.getNetwork()).chainId;
 
-async function verifySubjectAttribute() {
+    const subjectDid = new EthrDID({identifier: subjectAddress, provider: ethersProvider, chainNameOrId});
 
-    let subjectAddress = 'did:ethr:0x5:0xDBB3d90156fC23c28C709eB68af8403836951AF8';
-
-    const subjectDidDoc = await didResolver.resolve(subjectAddress);
+    const subjectDidDoc = await didResolver.resolve(subjectDid.did);
 
     console.debug(subjectDidDoc);
 
@@ -98,6 +101,10 @@ async function verifySubjectAttribute() {
         let publiKeyUtf8: string = ethers.utils.toUtf8String(`0x${method.publicKeyHex}`)
 
         if ( publiKeyUtf8 === signedJWT) {
+            const payload = publiKeyUtf8.split('.')[1];
+            const payloadJSON = JSON.parse(ethers.utils.toUtf8String(ethers.utils.base64.decode(payload)));
+
+            hexPrivateClaimSpan.innerHTML = JSON.stringify(payloadJSON.privateClaim);
             publicKeyHexSpan.innerHTML = JSON.stringify(method.publicKeyHex);
             hexStringSpan.innerHTML = publiKeyUtf8;
             subjectValidatedSpan.innerHTML = "Found Matching Public Key"
