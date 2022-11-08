@@ -87,26 +87,29 @@ async function verifySubjectAttribute(subjectAddress: string) {
     // Get the Metamask configured chainId
     let chainNameOrId = (await ethersProvider.getNetwork()).chainId;
 
+    // Configure the subject DID object
     const subjectDid = new EthrDID({identifier: subjectAddress, provider: ethersProvider, chainNameOrId});
 
+    // Resolve the Subject DID Document
     const subjectDidDoc = await didResolver.resolve(subjectDid.did);
 
-    console.debug(subjectDidDoc);
-
+    // Loop through the verificationMethod to find a matching key
     for (const method of subjectDidDoc.didDocument!.verificationMethod!) {
         if (!method.publicKeyHex) {
             continue;
         }
 
-        let publiKeyUtf8: string = ethers.utils.toUtf8String(`0x${method.publicKeyHex}`)
+        // Convert base64 string to DataHexString
+        let publicKeyUtf8: string = ethers.utils.toUtf8String(`0x${method.publicKeyHex}`)
 
-        if ( publiKeyUtf8 === signedJWT) {
-            const payload = publiKeyUtf8.split('.')[1];
+        if ( publicKeyUtf8 === signedJWT) {
+            // JWT is split into <header>.<payload>.<signature>
+            const payload = publicKeyUtf8.split('.')[1];
             const payloadJSON = JSON.parse(ethers.utils.toUtf8String(ethers.utils.base64.decode(payload)));
 
             hexPrivateClaimSpan.innerHTML = JSON.stringify(payloadJSON.privateClaim);
             publicKeyHexSpan.innerHTML = JSON.stringify(method.publicKeyHex);
-            hexStringSpan.innerHTML = publiKeyUtf8;
+            hexStringSpan.innerHTML = publicKeyUtf8;
             subjectValidatedSpan.innerHTML = "Found Matching Public Key"
         }
 
@@ -119,9 +122,10 @@ async function verifyIssuerDelegateSigner() {
     // Get the Metamask configured chainId
     const chainNameOrId = (await ethersProvider.getNetwork()).chainId;
 
-    // Process the accounts
+    // Wrap the audience address to enable calling of verify method
     const audienceDid = new EthrDID({identifier: audienceAddress, provider: ethersProvider, chainNameOrId});
 
+    // Utilise ethr-did to verify
     const JWTVerified = await audienceDid.verifyJWT(signedJWT, didResolver);
 
     console.log(`Verify JWT:`)

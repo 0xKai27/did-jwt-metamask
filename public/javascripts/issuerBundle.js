@@ -71,7 +71,7 @@ provider.on("network", (newNetwork, oldNetwork) => {
     }
 });
 
-},{"ethers":171}],2:[function(require,module,exports){
+},{"ethers":172}],2:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -84,7 +84,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const ethr_did_1 = require("ethr-did");
+const did_resolver_1 = require("did-resolver");
+const ethr_did_resolver_1 = require("ethr-did-resolver");
 const signer_1 = require("../ethers/signer");
+const registryAddress = '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b';
+const providerConfig = {
+    networks: [
+        { name: "0x5", provider: signer_1.provider },
+    ],
+    registry: registryAddress // optional as ethr-did-resolver sets this up as default
+};
+const ethrDidResolver = (0, ethr_did_resolver_1.getResolver)(providerConfig);
+const didResolver = new did_resolver_1.Resolver(ethrDidResolver);
 // Initialise the page objects to interact with
 // UI Section: "Configure subject and audience DIDs"
 const configureAddessesForm = document.querySelector('#configureAddresses');
@@ -189,6 +200,10 @@ function signJWT(JWTMessage) {
         delegateSignerSpan.innerHTML = kp.address;
         delegateSignerIdentifierSpan.innerHTML = kp.identifier;
         signedJWTSpan.innerHTML = signedJWT;
+        // Log the Issuer DID Doc to view the linked delegate signer
+        console.log(`Issuer DID Doc:`);
+        const issuerDoc = yield didResolver.resolve(`did:ethr:0x5:${issuerAddress}`);
+        console.debug(issuerDoc);
         // Save the JWT 
         yield fetch('/api/saveJWT', {
             method: 'POST',
@@ -201,7 +216,7 @@ function signJWT(JWTMessage) {
     });
 }
 
-},{"../ethers/signer":1,"ethr-did":173}],3:[function(require,module,exports){
+},{"../ethers/signer":1,"did-resolver":151,"ethr-did":175,"ethr-did-resolver":174}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.version = void 0;
@@ -8121,7 +8136,7 @@ function encrypt(account, password, options, progressCallback) {
 }
 exports.encrypt = encrypt;
 
-},{"./_version":52,"./utils":57,"@ethersproject/address":24,"@ethersproject/bytes":33,"@ethersproject/hdnode":51,"@ethersproject/keccak256":58,"@ethersproject/logger":60,"@ethersproject/pbkdf2":64,"@ethersproject/properties":66,"@ethersproject/random":88,"@ethersproject/transactions":107,"aes-js":144,"scrypt-js":223}],57:[function(require,module,exports){
+},{"./_version":52,"./utils":57,"@ethersproject/address":24,"@ethersproject/bytes":33,"@ethersproject/hdnode":51,"@ethersproject/keccak256":58,"@ethersproject/logger":60,"@ethersproject/pbkdf2":64,"@ethersproject/properties":66,"@ethersproject/random":88,"@ethersproject/transactions":107,"aes-js":144,"scrypt-js":225}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uuidV4 = exports.searchPath = exports.getPassword = exports.zpad = exports.looseArrayify = void 0;
@@ -8206,7 +8221,7 @@ function keccak256(data) {
 }
 exports.keccak256 = keccak256;
 
-},{"@ethersproject/bytes":33,"js-sha3":196}],59:[function(require,module,exports){
+},{"@ethersproject/bytes":33,"js-sha3":198}],59:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.version = void 0;
@@ -16008,7 +16023,7 @@ function computeHmac(algorithm, key, data) {
 }
 exports.computeHmac = computeHmac;
 
-},{"./_version":92,"./types":95,"@ethersproject/bytes":33,"@ethersproject/logger":60,"hash.js":182}],94:[function(require,module,exports){
+},{"./_version":92,"./types":95,"@ethersproject/bytes":33,"@ethersproject/logger":60,"hash.js":184}],94:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SupportedAlgorithm = exports.sha512 = exports.sha256 = exports.ripemd160 = exports.computeHmac = void 0;
@@ -16048,7 +16063,7 @@ var elliptic_1 = __importDefault(require("elliptic"));
 var EC = elliptic_1.default.ec;
 exports.EC = EC;
 
-},{"elliptic":151}],98:[function(require,module,exports){
+},{"elliptic":152}],98:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.computePublicKey = exports.recoverPublicKey = exports.SigningKey = void 0;
@@ -21322,7 +21337,7 @@ class NodeRandomSource {
 }
 exports.NodeRandomSource = NodeRandomSource;
 
-},{"@stablelib/wipe":140,"crypto":235}],137:[function(require,module,exports){
+},{"@stablelib/wipe":140,"crypto":237}],137:[function(require,module,exports){
 "use strict";
 // Copyright (C) 2016 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
@@ -27677,7 +27692,7 @@ module.exports = {
   };
 })(typeof module === 'undefined' || module, this);
 
-},{"buffer":235}],147:[function(require,module,exports){
+},{"buffer":237}],147:[function(require,module,exports){
 var r;
 
 module.exports = function rand(len) {
@@ -27744,7 +27759,7 @@ if (typeof self === 'object') {
   }
 }
 
-},{"crypto":235}],148:[function(require,module,exports){
+},{"crypto":237}],148:[function(require,module,exports){
 /* jshint esversion: 6 */
 /* jslint node: true */
 'use strict';
@@ -30051,7 +30066,7 @@ exports.xc20pDirDecrypter = xc20pDirDecrypter;
 exports.xc20pDirEncrypter = xc20pDirEncrypter;
 
 
-},{"@stablelib/ed25519":131,"@stablelib/random":134,"@stablelib/sha256":138,"@stablelib/x25519":141,"@stablelib/xchacha20poly1305":143,"bech32":150,"canonicalize":148,"elliptic":151,"js-sha3":196,"multiformats/basics":210,"uint8arrays":229,"uint8arrays/from-string":228}],150:[function(require,module,exports){
+},{"@stablelib/ed25519":131,"@stablelib/random":134,"@stablelib/sha256":138,"@stablelib/x25519":141,"@stablelib/xchacha20poly1305":143,"bech32":150,"canonicalize":148,"elliptic":152,"js-sha3":198,"multiformats/basics":212,"uint8arrays":231,"uint8arrays/from-string":230}],150:[function(require,module,exports){
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.bech32m = exports.bech32 = void 0;
@@ -30224,6 +30239,183 @@ exports.bech32 = getLibraryFromEncoding('bech32');
 exports.bech32m = getLibraryFromEncoding('bech32m');
 
 },{}],151:[function(require,module,exports){
+// Copyright 2018 Consensys AG
+
+function _catch(body, recover) {
+  try {
+    var result = body();
+  } catch (e) {
+    return recover(e);
+  }
+  if (result && result.then) {
+    return result.then(void 0, recover);
+  }
+  return result;
+}
+function inMemoryCache() {
+  const cache = new Map();
+  return function (parsed, resolve) {
+    try {
+      let _exit;
+      function _temp2(_result) {
+        if (_exit) return _result;
+        const cached = cache.get(parsed.didUrl);
+        return cached !== undefined ? cached : Promise.resolve(resolve()).then(function (result) {
+          var _result$didResolution;
+          if (((_result$didResolution = result.didResolutionMetadata) == null ? void 0 : _result$didResolution.error) !== 'notFound') {
+            cache.set(parsed.didUrl, result);
+          }
+          return result;
+        });
+      }
+      const _temp = function () {
+        if (parsed.params && parsed.params['no-cache'] === 'true') {
+          return Promise.resolve(resolve()).then(function (_await$resolve) {
+            _exit = 1;
+            return _await$resolve;
+          });
+        }
+      }();
+      return Promise.resolve(_temp && _temp.then ? _temp.then(_temp2) : _temp2(_temp));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+}
+function noCache(parsed, resolve) {
+  return resolve();
+}
+const PCT_ENCODED = '(?:%[0-9a-fA-F]{2})';
+const ID_CHAR = `(?:[a-zA-Z0-9._-]|${PCT_ENCODED})`;
+const METHOD = '([a-z0-9]+)';
+const METHOD_ID = `((?:${ID_CHAR}*:)*(${ID_CHAR}+))`;
+const PARAM_CHAR = '[a-zA-Z0-9_.:%-]';
+const PARAM = `;${PARAM_CHAR}+=${PARAM_CHAR}*`;
+const PARAMS = `((${PARAM})*)`;
+const PATH = `(/[^#?]*)?`;
+const QUERY = `([?][^#]*)?`;
+const FRAGMENT = `(#.*)?`;
+const DID_MATCHER = new RegExp(`^did:${METHOD}:${METHOD_ID}${PARAMS}${PATH}${QUERY}${FRAGMENT}$`);
+/**
+ * Parses a DID URL and builds a {@link ParsedDID | ParsedDID object}
+ *
+ * @param didUrl - the DID URL string to be parsed
+ * @returns a ParsedDID object, or null if the input is not a DID URL
+ */
+function parse(didUrl) {
+  if (didUrl === '' || !didUrl) return null;
+  const sections = didUrl.match(DID_MATCHER);
+  if (sections) {
+    const parts = {
+      did: `did:${sections[1]}:${sections[2]}`,
+      method: sections[1],
+      id: sections[2],
+      didUrl
+    };
+    if (sections[4]) {
+      const params = sections[4].slice(1).split(';');
+      parts.params = {};
+      for (const p of params) {
+        const kv = p.split('=');
+        parts.params[kv[0]] = kv[1];
+      }
+    }
+    if (sections[6]) parts.path = sections[6];
+    if (sections[7]) parts.query = sections[7].slice(1);
+    if (sections[8]) parts.fragment = sections[8].slice(1);
+    return parts;
+  }
+  return null;
+}
+const EMPTY_RESULT = {
+  didResolutionMetadata: {},
+  didDocument: null,
+  didDocumentMetadata: {}
+};
+function wrapLegacyResolver(resolve) {
+  return function (did, parsed, resolver) {
+    try {
+      return Promise.resolve(_catch(function () {
+        return Promise.resolve(resolve(did, parsed, resolver)).then(function (doc) {
+          return {
+            ...EMPTY_RESULT,
+            didResolutionMetadata: {
+              contentType: 'application/did+ld+json'
+            },
+            didDocument: doc
+          };
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        });
+      }, function (e) {
+        return {
+          ...EMPTY_RESULT,
+          didResolutionMetadata: {
+            error: 'notFound',
+            message: e.toString() // This is not in spec, but may be helpful
+          }
+        };
+      }));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+}
+/**
+ * This implementation of {@link Resolvable} bundles together multiple implementations of {@link DIDResolver} and
+ * presents a single function call to users.
+ */
+class Resolver {
+  constructor(registry = {}, options = {}) {
+    this.registry = void 0;
+    this.cache = void 0;
+    this.registry = registry;
+    this.cache = options.cache === true ? inMemoryCache() : options.cache || noCache;
+    if (options.legacyResolvers) {
+      Object.keys(options.legacyResolvers).map(methodName => {
+        if (!this.registry[methodName]) {
+          this.registry[methodName] = wrapLegacyResolver(
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          options.legacyResolvers[methodName]);
+        }
+      });
+    }
+  }
+  resolve(didUrl, options = {}) {
+    try {
+      const _this = this;
+      const parsed = parse(didUrl);
+      if (parsed === null) {
+        return Promise.resolve({
+          ...EMPTY_RESULT,
+          didResolutionMetadata: {
+            error: 'invalidDid'
+          }
+        });
+      }
+      const resolver = _this.registry[parsed.method];
+      if (!resolver) {
+        return Promise.resolve({
+          ...EMPTY_RESULT,
+          didResolutionMetadata: {
+            error: 'unsupportedDidMethod'
+          }
+        });
+      }
+      return Promise.resolve(_this.cache(parsed, () => resolver(parsed.did, parsed, _this, options)));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+}
+
+exports.Resolver = Resolver;
+exports.inMemoryCache = inMemoryCache;
+exports.noCache = noCache;
+exports.parse = parse;
+exports.wrapLegacyResolver = wrapLegacyResolver;
+
+
+},{}],152:[function(require,module,exports){
 'use strict';
 
 var elliptic = exports;
@@ -30238,7 +30430,7 @@ elliptic.curves = require('./elliptic/curves');
 elliptic.ec = require('./elliptic/ec');
 elliptic.eddsa = require('./elliptic/eddsa');
 
-},{"../package.json":168,"./elliptic/curve":154,"./elliptic/curves":157,"./elliptic/ec":158,"./elliptic/eddsa":161,"./elliptic/utils":165,"brorand":147}],152:[function(require,module,exports){
+},{"../package.json":169,"./elliptic/curve":155,"./elliptic/curves":158,"./elliptic/ec":159,"./elliptic/eddsa":162,"./elliptic/utils":166,"brorand":147}],153:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -30621,7 +30813,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../utils":165,"bn.js":166}],153:[function(require,module,exports){
+},{"../utils":166,"bn.js":167}],154:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -31058,7 +31250,7 @@ Point.prototype.eqXToP = function eqXToP(x) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../utils":165,"./base":152,"bn.js":166,"inherits":167}],154:[function(require,module,exports){
+},{"../utils":166,"./base":153,"bn.js":167,"inherits":168}],155:[function(require,module,exports){
 'use strict';
 
 var curve = exports;
@@ -31068,7 +31260,7 @@ curve.short = require('./short');
 curve.mont = require('./mont');
 curve.edwards = require('./edwards');
 
-},{"./base":152,"./edwards":153,"./mont":155,"./short":156}],155:[function(require,module,exports){
+},{"./base":153,"./edwards":154,"./mont":156,"./short":157}],156:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -31248,7 +31440,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../utils":165,"./base":152,"bn.js":166,"inherits":167}],156:[function(require,module,exports){
+},{"../utils":166,"./base":153,"bn.js":167,"inherits":168}],157:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -32188,7 +32380,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../utils":165,"./base":152,"bn.js":166,"inherits":167}],157:[function(require,module,exports){
+},{"../utils":166,"./base":153,"bn.js":167,"inherits":168}],158:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -32396,7 +32588,7 @@ defineCurve('secp256k1', {
   ],
 });
 
-},{"./curve":154,"./precomputed/secp256k1":164,"./utils":165,"hash.js":182}],158:[function(require,module,exports){
+},{"./curve":155,"./precomputed/secp256k1":165,"./utils":166,"hash.js":184}],159:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -32641,7 +32833,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../curves":157,"../utils":165,"./key":159,"./signature":160,"bn.js":166,"brorand":147,"hmac-drbg":194}],159:[function(require,module,exports){
+},{"../curves":158,"../utils":166,"./key":160,"./signature":161,"bn.js":167,"brorand":147,"hmac-drbg":196}],160:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -32764,7 +32956,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"../utils":165,"bn.js":166}],160:[function(require,module,exports){
+},{"../utils":166,"bn.js":167}],161:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -32932,7 +33124,7 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../utils":165,"bn.js":166}],161:[function(require,module,exports){
+},{"../utils":166,"bn.js":167}],162:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -33052,7 +33244,7 @@ EDDSA.prototype.isPoint = function isPoint(val) {
   return val instanceof this.pointClass;
 };
 
-},{"../curves":157,"../utils":165,"./key":162,"./signature":163,"hash.js":182}],162:[function(require,module,exports){
+},{"../curves":158,"../utils":166,"./key":163,"./signature":164,"hash.js":184}],163:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -33149,7 +33341,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../utils":165}],163:[function(require,module,exports){
+},{"../utils":166}],164:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -33216,7 +33408,7 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../utils":165,"bn.js":166}],164:[function(require,module,exports){
+},{"../utils":166,"bn.js":167}],165:[function(require,module,exports){
 module.exports = {
   doubles: {
     step: 4,
@@ -33998,7 +34190,7 @@ module.exports = {
   },
 };
 
-},{}],165:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -34119,7 +34311,7 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":166,"minimalistic-assert":197,"minimalistic-crypto-utils":198}],166:[function(require,module,exports){
+},{"bn.js":167,"minimalistic-assert":199,"minimalistic-crypto-utils":200}],167:[function(require,module,exports){
 (function (module, exports) {
   'use strict';
 
@@ -37567,7 +37759,7 @@ utils.intFromLE = intFromLE;
   };
 })(typeof module === 'undefined' || module, this);
 
-},{"buffer":235}],167:[function(require,module,exports){
+},{"buffer":237}],168:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -37596,7 +37788,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],168:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 module.exports={
   "name": "elliptic",
   "version": "6.5.4",
@@ -37654,13 +37846,13 @@ module.exports={
   }
 }
 
-},{}],169:[function(require,module,exports){
+},{}],170:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.version = void 0;
 exports.version = "ethers/5.7.1";
 
-},{}],170:[function(require,module,exports){
+},{}],171:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -37716,7 +37908,7 @@ Object.defineProperty(exports, "version", { enumerable: true, get: function () {
 var logger = new logger_1.Logger(_version_1.version);
 exports.logger = logger;
 
-},{"./_version":169,"./utils":172,"@ethersproject/abstract-signer":22,"@ethersproject/bignumber":31,"@ethersproject/constants":37,"@ethersproject/contracts":40,"@ethersproject/logger":60,"@ethersproject/providers":77,"@ethersproject/wallet":111,"@ethersproject/wordlists":116}],171:[function(require,module,exports){
+},{"./_version":170,"./utils":173,"@ethersproject/abstract-signer":22,"@ethersproject/bignumber":31,"@ethersproject/constants":37,"@ethersproject/contracts":40,"@ethersproject/logger":60,"@ethersproject/providers":77,"@ethersproject/wallet":111,"@ethersproject/wordlists":116}],172:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -37770,7 +37962,7 @@ Object.defineProperty(exports, "wordlists", { enumerable: true, get: function ()
 Object.defineProperty(exports, "version", { enumerable: true, get: function () { return ethers_1.version; } });
 Object.defineProperty(exports, "Wordlist", { enumerable: true, get: function () { return ethers_1.Wordlist; } });
 
-},{"./ethers":170}],172:[function(require,module,exports){
+},{"./ethers":171}],173:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -37919,7 +38111,2494 @@ var strings_2 = require("@ethersproject/strings");
 Object.defineProperty(exports, "UnicodeNormalizationForm", { enumerable: true, get: function () { return strings_2.UnicodeNormalizationForm; } });
 Object.defineProperty(exports, "Utf8ErrorReason", { enumerable: true, get: function () { return strings_2.Utf8ErrorReason; } });
 
-},{"@ethersproject/abi":17,"@ethersproject/address":24,"@ethersproject/base64":26,"@ethersproject/basex":27,"@ethersproject/bytes":33,"@ethersproject/hash":46,"@ethersproject/hdnode":51,"@ethersproject/json-wallets":54,"@ethersproject/keccak256":58,"@ethersproject/logger":60,"@ethersproject/properties":66,"@ethersproject/random":88,"@ethersproject/rlp":91,"@ethersproject/sha2":94,"@ethersproject/signing-key":98,"@ethersproject/solidity":100,"@ethersproject/strings":104,"@ethersproject/transactions":107,"@ethersproject/units":109,"@ethersproject/wallet":111,"@ethersproject/web":114}],173:[function(require,module,exports){
+},{"@ethersproject/abi":17,"@ethersproject/address":24,"@ethersproject/base64":26,"@ethersproject/basex":27,"@ethersproject/bytes":33,"@ethersproject/hash":46,"@ethersproject/hdnode":51,"@ethersproject/json-wallets":54,"@ethersproject/keccak256":58,"@ethersproject/logger":60,"@ethersproject/properties":66,"@ethersproject/random":88,"@ethersproject/rlp":91,"@ethersproject/sha2":94,"@ethersproject/signing-key":98,"@ethersproject/solidity":100,"@ethersproject/strings":104,"@ethersproject/transactions":107,"@ethersproject/units":109,"@ethersproject/wallet":111,"@ethersproject/web":114}],174:[function(require,module,exports){
+(function (Buffer){(function (){
+var basex = require('@ethersproject/basex');
+var bignumber = require('@ethersproject/bignumber');
+var contracts = require('@ethersproject/contracts');
+var providers = require('@ethersproject/providers');
+var address = require('@ethersproject/address');
+var transactions = require('@ethersproject/transactions');
+var keccak256 = require('@ethersproject/keccak256');
+var bytes = require('@ethersproject/bytes');
+require('@ethersproject/signing-key');
+
+const identifierMatcher = /^(.*)?(0x[0-9a-fA-F]{40}|0x[0-9a-fA-F]{66})$/;
+const nullAddress = '0x0000000000000000000000000000000000000000';
+const DEFAULT_REGISTRY_ADDRESS = '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b';
+const MESSAGE_PREFIX = '0x1900';
+exports.verificationMethodTypes = void 0;
+
+(function (verificationMethodTypes) {
+  verificationMethodTypes["EcdsaSecp256k1VerificationKey2019"] = "EcdsaSecp256k1VerificationKey2019";
+  verificationMethodTypes["EcdsaSecp256k1RecoveryMethod2020"] = "EcdsaSecp256k1RecoveryMethod2020";
+  verificationMethodTypes["Ed25519VerificationKey2018"] = "Ed25519VerificationKey2018";
+  verificationMethodTypes["RSAVerificationKey2018"] = "RSAVerificationKey2018";
+  verificationMethodTypes["X25519KeyAgreementKey2019"] = "X25519KeyAgreementKey2019";
+})(exports.verificationMethodTypes || (exports.verificationMethodTypes = {}));
+
+var eventNames;
+
+(function (eventNames) {
+  eventNames["DIDOwnerChanged"] = "DIDOwnerChanged";
+  eventNames["DIDAttributeChanged"] = "DIDAttributeChanged";
+  eventNames["DIDDelegateChanged"] = "DIDDelegateChanged";
+})(eventNames || (eventNames = {}));
+
+const legacyAttrTypes = {
+  sigAuth: 'SignatureAuthentication2018',
+  veriKey: 'VerificationKey2018',
+  enc: 'KeyAgreementKey2019'
+};
+const legacyAlgoMap = {
+  /**@deprecated */
+  Secp256k1VerificationKey2018: exports.verificationMethodTypes.EcdsaSecp256k1VerificationKey2019,
+
+  /**@deprecated */
+  Ed25519SignatureAuthentication2018: exports.verificationMethodTypes.Ed25519VerificationKey2018,
+
+  /**@deprecated */
+  Secp256k1SignatureAuthentication2018: exports.verificationMethodTypes.EcdsaSecp256k1VerificationKey2019,
+  //keep legacy mapping
+  RSAVerificationKey2018: exports.verificationMethodTypes.RSAVerificationKey2018,
+  Ed25519VerificationKey2018: exports.verificationMethodTypes.Ed25519VerificationKey2018,
+  X25519KeyAgreementKey2019: exports.verificationMethodTypes.X25519KeyAgreementKey2019
+};
+function strip0x(input) {
+  return input.startsWith('0x') ? input.slice(2) : input;
+}
+function bytes32toString(input) {
+  const buff = typeof input === 'string' ? Buffer.from(input.slice(2), 'hex') : Buffer.from(input);
+  return buff.toString('utf8').replace(/\0+$/, '');
+}
+function stringToBytes32(str) {
+  const buffStr = '0x' + Buffer.from(str).slice(0, 32).toString('hex');
+  return buffStr + '0'.repeat(66 - buffStr.length);
+}
+function interpretIdentifier(identifier) {
+  let id = identifier;
+  let network = undefined;
+
+  if (id.startsWith('did:ethr')) {
+    id = id.split('?')[0];
+    const components = id.split(':');
+    id = components[components.length - 1];
+
+    if (components.length >= 4) {
+      network = components.splice(2, components.length - 3).join(':');
+    }
+  }
+
+  if (id.length > 42) {
+    return {
+      address: transactions.computeAddress(id),
+      publicKey: id,
+      network
+    };
+  } else {
+    return {
+      address: address.getAddress(id),
+      network
+    }; // checksum address
+  }
+}
+exports.Errors = void 0;
+
+(function (Errors) {
+  /**
+   * The resolver has failed to construct the DID document.
+   * This can be caused by a network issue, a wrong registry address or malformed logs while parsing the registry history.
+   * Please inspect the `DIDResolutionMetadata.message` to debug further.
+   */
+  Errors["notFound"] = "notFound";
+  /**
+   * The resolver does not know how to resolve the given DID. Most likely it is not a `did:ethr`.
+   */
+
+  Errors["invalidDid"] = "invalidDid";
+  /**
+   * The resolver is misconfigured or is being asked to resolve a DID anchored on an unknown network
+   */
+
+  Errors["unknownNetwork"] = "unknownNetwork";
+})(exports.Errors || (exports.Errors = {}));
+
+/**
+ * Represents the known deployments of the ERC1056 registry contract.
+ */
+const deployments = [{
+  chainId: 1,
+  registry: '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b',
+  name: 'mainnet',
+  legacyNonce: true
+}, {
+  chainId: 3,
+  registry: '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b',
+  name: 'ropsten',
+  legacyNonce: true
+}, {
+  chainId: 4,
+  registry: '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b',
+  name: 'rinkeby',
+  legacyNonce: true
+}, {
+  chainId: 5,
+  registry: '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b',
+  name: 'goerli',
+  legacyNonce: true
+}, {
+  chainId: 42,
+  registry: '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b',
+  name: 'kovan',
+  legacyNonce: true
+}, {
+  chainId: 30,
+  registry: '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b',
+  name: 'rsk',
+  legacyNonce: true
+}, {
+  chainId: 31,
+  registry: '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b',
+  name: 'rsk:testnet',
+  legacyNonce: true
+}, {
+  chainId: 246,
+  registry: '0xE29672f34e92b56C9169f9D485fFc8b9A136BCE4',
+  name: 'ewc',
+  description: 'energy web chain',
+  legacyNonce: false
+}, {
+  chainId: 73799,
+  registry: '0xC15D5A57A8Eb0e1dCBE5D88B8f9a82017e5Cc4AF',
+  name: 'volta',
+  description: 'energy web testnet',
+  legacyNonce: false
+}, {
+  chainId: 246785,
+  registry: '0xdCa7EF03e98e0DC2B855bE647C39ABe984fcF21B',
+  name: 'artis:tau1',
+  legacyNonce: true
+}, {
+  chainId: 246529,
+  registry: '0xdCa7EF03e98e0DC2B855bE647C39ABe984fcF21B',
+  name: 'artis:sigma1',
+  legacyNonce: true
+}, {
+  chainId: 137,
+  registry: '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b',
+  name: 'polygon',
+  legacyNonce: true
+}, {
+  chainId: 80001,
+  registry: '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b',
+  name: 'polygon:test',
+  legacyNonce: true
+}, {
+  chainId: 1313161554,
+  registry: '0x63eD58B671EeD12Bc1652845ba5b2CDfBff198e0',
+  name: 'aurora',
+  legacyNonce: true
+}];
+
+var _format = "hh-sol-artifact-1";
+var contractName = "EthereumDIDRegistry";
+var sourceName = "contracts/EthereumDIDRegistry.sol";
+var abi = [
+	{
+		anonymous: false,
+		inputs: [
+			{
+				indexed: true,
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			},
+			{
+				indexed: false,
+				internalType: "bytes32",
+				name: "name",
+				type: "bytes32"
+			},
+			{
+				indexed: false,
+				internalType: "bytes",
+				name: "value",
+				type: "bytes"
+			},
+			{
+				indexed: false,
+				internalType: "uint256",
+				name: "validTo",
+				type: "uint256"
+			},
+			{
+				indexed: false,
+				internalType: "uint256",
+				name: "previousChange",
+				type: "uint256"
+			}
+		],
+		name: "DIDAttributeChanged",
+		type: "event"
+	},
+	{
+		anonymous: false,
+		inputs: [
+			{
+				indexed: true,
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			},
+			{
+				indexed: false,
+				internalType: "bytes32",
+				name: "delegateType",
+				type: "bytes32"
+			},
+			{
+				indexed: false,
+				internalType: "address",
+				name: "delegate",
+				type: "address"
+			},
+			{
+				indexed: false,
+				internalType: "uint256",
+				name: "validTo",
+				type: "uint256"
+			},
+			{
+				indexed: false,
+				internalType: "uint256",
+				name: "previousChange",
+				type: "uint256"
+			}
+		],
+		name: "DIDDelegateChanged",
+		type: "event"
+	},
+	{
+		anonymous: false,
+		inputs: [
+			{
+				indexed: true,
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			},
+			{
+				indexed: false,
+				internalType: "address",
+				name: "owner",
+				type: "address"
+			},
+			{
+				indexed: false,
+				internalType: "uint256",
+				name: "previousChange",
+				type: "uint256"
+			}
+		],
+		name: "DIDOwnerChanged",
+		type: "event"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			},
+			{
+				internalType: "bytes32",
+				name: "delegateType",
+				type: "bytes32"
+			},
+			{
+				internalType: "address",
+				name: "delegate",
+				type: "address"
+			},
+			{
+				internalType: "uint256",
+				name: "validity",
+				type: "uint256"
+			}
+		],
+		name: "addDelegate",
+		outputs: [
+		],
+		stateMutability: "nonpayable",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			},
+			{
+				internalType: "uint8",
+				name: "sigV",
+				type: "uint8"
+			},
+			{
+				internalType: "bytes32",
+				name: "sigR",
+				type: "bytes32"
+			},
+			{
+				internalType: "bytes32",
+				name: "sigS",
+				type: "bytes32"
+			},
+			{
+				internalType: "bytes32",
+				name: "delegateType",
+				type: "bytes32"
+			},
+			{
+				internalType: "address",
+				name: "delegate",
+				type: "address"
+			},
+			{
+				internalType: "uint256",
+				name: "validity",
+				type: "uint256"
+			}
+		],
+		name: "addDelegateSigned",
+		outputs: [
+		],
+		stateMutability: "nonpayable",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			},
+			{
+				internalType: "address",
+				name: "newOwner",
+				type: "address"
+			}
+		],
+		name: "changeOwner",
+		outputs: [
+		],
+		stateMutability: "nonpayable",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			},
+			{
+				internalType: "uint8",
+				name: "sigV",
+				type: "uint8"
+			},
+			{
+				internalType: "bytes32",
+				name: "sigR",
+				type: "bytes32"
+			},
+			{
+				internalType: "bytes32",
+				name: "sigS",
+				type: "bytes32"
+			},
+			{
+				internalType: "address",
+				name: "newOwner",
+				type: "address"
+			}
+		],
+		name: "changeOwnerSigned",
+		outputs: [
+		],
+		stateMutability: "nonpayable",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "",
+				type: "address"
+			}
+		],
+		name: "changed",
+		outputs: [
+			{
+				internalType: "uint256",
+				name: "",
+				type: "uint256"
+			}
+		],
+		stateMutability: "view",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "",
+				type: "address"
+			},
+			{
+				internalType: "bytes32",
+				name: "",
+				type: "bytes32"
+			},
+			{
+				internalType: "address",
+				name: "",
+				type: "address"
+			}
+		],
+		name: "delegates",
+		outputs: [
+			{
+				internalType: "uint256",
+				name: "",
+				type: "uint256"
+			}
+		],
+		stateMutability: "view",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			}
+		],
+		name: "identityOwner",
+		outputs: [
+			{
+				internalType: "address",
+				name: "",
+				type: "address"
+			}
+		],
+		stateMutability: "view",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "",
+				type: "address"
+			}
+		],
+		name: "nonce",
+		outputs: [
+			{
+				internalType: "uint256",
+				name: "",
+				type: "uint256"
+			}
+		],
+		stateMutability: "view",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "",
+				type: "address"
+			}
+		],
+		name: "owners",
+		outputs: [
+			{
+				internalType: "address",
+				name: "",
+				type: "address"
+			}
+		],
+		stateMutability: "view",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			},
+			{
+				internalType: "bytes32",
+				name: "name",
+				type: "bytes32"
+			},
+			{
+				internalType: "bytes",
+				name: "value",
+				type: "bytes"
+			}
+		],
+		name: "revokeAttribute",
+		outputs: [
+		],
+		stateMutability: "nonpayable",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			},
+			{
+				internalType: "uint8",
+				name: "sigV",
+				type: "uint8"
+			},
+			{
+				internalType: "bytes32",
+				name: "sigR",
+				type: "bytes32"
+			},
+			{
+				internalType: "bytes32",
+				name: "sigS",
+				type: "bytes32"
+			},
+			{
+				internalType: "bytes32",
+				name: "name",
+				type: "bytes32"
+			},
+			{
+				internalType: "bytes",
+				name: "value",
+				type: "bytes"
+			}
+		],
+		name: "revokeAttributeSigned",
+		outputs: [
+		],
+		stateMutability: "nonpayable",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			},
+			{
+				internalType: "bytes32",
+				name: "delegateType",
+				type: "bytes32"
+			},
+			{
+				internalType: "address",
+				name: "delegate",
+				type: "address"
+			}
+		],
+		name: "revokeDelegate",
+		outputs: [
+		],
+		stateMutability: "nonpayable",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			},
+			{
+				internalType: "uint8",
+				name: "sigV",
+				type: "uint8"
+			},
+			{
+				internalType: "bytes32",
+				name: "sigR",
+				type: "bytes32"
+			},
+			{
+				internalType: "bytes32",
+				name: "sigS",
+				type: "bytes32"
+			},
+			{
+				internalType: "bytes32",
+				name: "delegateType",
+				type: "bytes32"
+			},
+			{
+				internalType: "address",
+				name: "delegate",
+				type: "address"
+			}
+		],
+		name: "revokeDelegateSigned",
+		outputs: [
+		],
+		stateMutability: "nonpayable",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			},
+			{
+				internalType: "bytes32",
+				name: "name",
+				type: "bytes32"
+			},
+			{
+				internalType: "bytes",
+				name: "value",
+				type: "bytes"
+			},
+			{
+				internalType: "uint256",
+				name: "validity",
+				type: "uint256"
+			}
+		],
+		name: "setAttribute",
+		outputs: [
+		],
+		stateMutability: "nonpayable",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			},
+			{
+				internalType: "uint8",
+				name: "sigV",
+				type: "uint8"
+			},
+			{
+				internalType: "bytes32",
+				name: "sigR",
+				type: "bytes32"
+			},
+			{
+				internalType: "bytes32",
+				name: "sigS",
+				type: "bytes32"
+			},
+			{
+				internalType: "bytes32",
+				name: "name",
+				type: "bytes32"
+			},
+			{
+				internalType: "bytes",
+				name: "value",
+				type: "bytes"
+			},
+			{
+				internalType: "uint256",
+				name: "validity",
+				type: "uint256"
+			}
+		],
+		name: "setAttributeSigned",
+		outputs: [
+		],
+		stateMutability: "nonpayable",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "identity",
+				type: "address"
+			},
+			{
+				internalType: "bytes32",
+				name: "delegateType",
+				type: "bytes32"
+			},
+			{
+				internalType: "address",
+				name: "delegate",
+				type: "address"
+			}
+		],
+		name: "validDelegate",
+		outputs: [
+			{
+				internalType: "bool",
+				name: "",
+				type: "bool"
+			}
+		],
+		stateMutability: "view",
+		type: "function"
+	}
+];
+var bytecode = "0x608060405234801561001057600080fd5b506113c8806100206000396000f3fe608060405234801561001057600080fd5b50600436106100ff5760003560e01c806380b29f7c11610097578063a7068d6611610066578063a7068d66146102b5578063e476af5c146102c8578063f00d4b5d146102db578063f96d0f9f146102ee57600080fd5b806380b29f7c146102695780638733d4e81461027c578063930726841461028f5780639c2c1b2b146102a257600080fd5b8063240cf1fa116100d3578063240cf1fa146101b1578063622b2a3c146101c457806370ae92d2146102365780637ad4b0a41461025657600080fd5b8062c023da14610104578063022914a7146101195780630d44625b1461015f578063123b5e981461019e575b600080fd5b610117610112366004610ea7565b61030e565b005b610142610127366004610dd2565b6000602081905290815260409020546001600160a01b031681565b6040516001600160a01b0390911681526020015b60405180910390f35b61019061016d366004610e27565b600160209081526000938452604080852082529284528284209052825290205481565b604051908152602001610156565b6101176101ac3660046110f7565b61031f565b6101176101bf366004610f5d565b6103ab565b6102266101d2366004610e27565b6001600160a01b039283166000908152600160209081526040808320815180840196909652815180870384018152958201825285519583019590952083529381528382209290941681529252902054421090565b6040519015158152602001610156565b610190610244366004610dd2565b60036020526000908152604090205481565b610117610264366004610efe565b61048d565b610117610277366004610e27565b6104a0565b61014261028a366004610dd2565b6104ac565b61011761029d366004610fb4565b6104dc565b6101176102b0366004611013565b6105c7565b6101176102c3366004610e63565b6106b5565b6101176102d636600461107d565b6106c2565b6101176102e9366004610df4565b610741565b6101906102fc366004610dd2565b60026020526000908152604090205481565b61031a83338484610750565b505050565b6000601960f81b81306003826103348d6104ac565b6001600160a01b03166001600160a01b03168152602001908152602001600020548b88888860405160200161037098979695949392919061123e565b6040516020818303038152906040528051906020012090506103a1886103998a8a8a8a87610824565b868686610923565b5050505050505050565b6000601960f81b81306003826103c08b6104ac565b6001600160a01b0316815260208082019290925260409081016000205481516001600160f81b0319968716818501529490951660218501526bffffffffffffffffffffffff19606093841b8116602286015260368501959095528a831b851660568501527f6368616e67654f776e6572000000000000000000000000000000000000000000606a8501529186901b90931660758301528051606981840301815260899092019052805191012090506104858661047f8188888887610824565b84610a07565b505050505050565b61049a8433858585610923565b50505050565b61031a83338484610b03565b6001600160a01b0380821660009081526020819052604081205490911680156104d55792915050565b5090919050565b6000601960f81b81306003826104f18c6104ac565b6001600160a01b0316815260208082019290925260409081016000205481516001600160f81b0319968716818501529490951660218501526bffffffffffffffffffffffff19606093841b8116602286015260368501959095528b831b851660568501527f7265766f6b6544656c6567617465000000000000000000000000000000000000606a850152607884018890529186901b90931660988301528051608c81840301815260ac9092019052805191012090506105be876105b78189898987610824565b8585610b03565b50505050505050565b6000601960f81b81306003826105dc8d6104ac565b6001600160a01b0316815260208082019290925260409081016000205490516001600160f81b031995861692810192909252929093166021840152606090811b6bffffffffffffffffffffffff19908116602285015260368401929092528a811b821660568401527f61646444656c6567617465000000000000000000000000000000000000000000606a8401526075830187905285901b16609582015260a9810183905260c9016040516020818303038152906040528051906020012090506103a1886106ad8a8a8a8a87610824565b868686610bfd565b61049a8433858585610bfd565b6000601960f81b81306003826106d78c6104ac565b6001600160a01b03166001600160a01b03168152602001908152602001600020548a878760405160200161071197969594939291906111a8565b6040516020818303038152906040528051906020012090506105be8761073a8989898987610824565b8585610750565b61074c823383610a07565b5050565b838361075b826104ac565b6001600160a01b0316816001600160a01b0316146107ac5760405162461bcd60e51b81526020600482015260096024820152683130b22fb0b1ba37b960b91b60448201526064015b60405180910390fd5b6001600160a01b0386166000818152600260205260408082205490517f18ab6b2ae3d64306c00ce663125f2bd680e441a098de1635bd7ad8b0d44965e4926107f9928992899291906112db565b60405180910390a25050506001600160a01b0390921660009081526002602052604090204390555050565b6040805160008082526020820180845284905260ff8716928201929092526060810185905260808101849052819060019060a0016020604051602081039080840390855afa15801561087a573d6000803e3d6000fd5b50505060206040510351905061088f876104ac565b6001600160a01b0316816001600160a01b0316146108ef5760405162461bcd60e51b815260206004820152600d60248201527f6261645f7369676e61747572650000000000000000000000000000000000000060448201526064016107a3565b6001600160a01b03811660009081526003602052604081208054916109138361134b565b9091555090979650505050505050565b848461092e826104ac565b6001600160a01b0316816001600160a01b03161461097a5760405162461bcd60e51b81526020600482015260096024820152683130b22fb0b1ba37b960b91b60448201526064016107a3565b6001600160a01b0387167f18ab6b2ae3d64306c00ce663125f2bd680e441a098de1635bd7ad8b0d44965e486866109b18742611307565b6001600160a01b038c16600090815260026020526040908190205490516109db94939291906112db565b60405180910390a25050506001600160a01b039093166000908152600260205260409020439055505050565b8282610a12826104ac565b6001600160a01b0316816001600160a01b031614610a5e5760405162461bcd60e51b81526020600482015260096024820152683130b22fb0b1ba37b960b91b60448201526064016107a3565b6001600160a01b0385811660008181526020818152604080832080547fffffffffffffffffffffffff000000000000000000000000000000000000000016958916958617905560028252918290205482519485529084015290917f38a5a6e68f30ed1ab45860a4afb34bcb2fc00f22ca462d249b8a8d40cda6f7a3910160405180910390a2505050506001600160a01b03166000908152600260205260409020439055565b8383610b0e826104ac565b6001600160a01b0316816001600160a01b031614610b5a5760405162461bcd60e51b81526020600482015260096024820152683130b22fb0b1ba37b960b91b60448201526064016107a3565b6001600160a01b03868116600081815260016020908152604080832081518084018b90528251808203850181528184018085528151918601919091208652918452828520968a16808652968452828520429081905586865260029094529190932054928990526060810194909452608084015260a0830152907f5a5084339536bcab65f20799fcc58724588145ca054bd2be626174b27ba156f79060c0016107f9565b8484610c08826104ac565b6001600160a01b0316816001600160a01b031614610c545760405162461bcd60e51b81526020600482015260096024820152683130b22fb0b1ba37b960b91b60448201526064016107a3565b610c5e8342611307565b6001600160a01b03888116600081815260016020908152604080832081518084018d9052825180820385018152908301835280519084012084528252808320948a16835293905291909120919091557f5a5084339536bcab65f20799fcc58724588145ca054bd2be626174b27ba156f78686610cda8742611307565b6001600160a01b038c8116600090815260026020908152604091829020548251968752949092169185019190915283015260608201526080016109db565b80356001600160a01b0381168114610d2f57600080fd5b919050565b600082601f830112610d4557600080fd5b813567ffffffffffffffff80821115610d6057610d6061137c565b604051601f8301601f19908116603f01168101908282118183101715610d8857610d8861137c565b81604052838152866020858801011115610da157600080fd5b836020870160208301376000602085830101528094505050505092915050565b803560ff81168114610d2f57600080fd5b600060208284031215610de457600080fd5b610ded82610d18565b9392505050565b60008060408385031215610e0757600080fd5b610e1083610d18565b9150610e1e60208401610d18565b90509250929050565b600080600060608486031215610e3c57600080fd5b610e4584610d18565b925060208401359150610e5a60408501610d18565b90509250925092565b60008060008060808587031215610e7957600080fd5b610e8285610d18565b935060208501359250610e9760408601610d18565b9396929550929360600135925050565b600080600060608486031215610ebc57600080fd5b610ec584610d18565b925060208401359150604084013567ffffffffffffffff811115610ee857600080fd5b610ef486828701610d34565b9150509250925092565b60008060008060808587031215610f1457600080fd5b610f1d85610d18565b935060208501359250604085013567ffffffffffffffff811115610f4057600080fd5b610f4c87828801610d34565b949793965093946060013593505050565b600080600080600060a08688031215610f7557600080fd5b610f7e86610d18565b9450610f8c60208701610dc1565b93506040860135925060608601359150610fa860808701610d18565b90509295509295909350565b60008060008060008060c08789031215610fcd57600080fd5b610fd687610d18565b9550610fe460208801610dc1565b945060408701359350606087013592506080870135915061100760a08801610d18565b90509295509295509295565b600080600080600080600060e0888a03121561102e57600080fd5b61103788610d18565b965061104560208901610dc1565b955060408801359450606088013593506080880135925061106860a08901610d18565b915060c0880135905092959891949750929550565b60008060008060008060c0878903121561109657600080fd5b61109f87610d18565b95506110ad60208801610dc1565b945060408701359350606087013592506080870135915060a087013567ffffffffffffffff8111156110de57600080fd5b6110ea89828a01610d34565b9150509295509295509295565b600080600080600080600060e0888a03121561111257600080fd5b61111b88610d18565b965061112960208901610dc1565b955060408801359450606088013593506080880135925060a088013567ffffffffffffffff81111561115a57600080fd5b6111668a828b01610d34565b92505060c0880135905092959891949750929550565b6000815180845261119481602086016020860161131f565b601f01601f19169290920160200192915050565b60006001600160f81b0319808a1683528089166001840152506bffffffffffffffffffffffff19808860601b166002840152866016840152808660601b166036840152507f7265766f6b654174747269627574650000000000000000000000000000000000604a830152836059830152825161122b81607985016020870161131f565b9190910160790198975050505050505050565b60006001600160f81b0319808b168352808a166001840152506bffffffffffffffffffffffff19808960601b166002840152876016840152808760601b166036840152507f7365744174747269627574650000000000000000000000000000000000000000604a83015284605683015283516112c181607685016020880161131f565b607692019182019290925260960198975050505050505050565b8481526080602082015260006112f4608083018661117c565b6040830194909452506060015292915050565b6000821982111561131a5761131a611366565b500190565b60005b8381101561133a578181015183820152602001611322565b8381111561049a5750506000910152565b600060001982141561135f5761135f611366565b5060010190565b634e487b7160e01b600052601160045260246000fd5b634e487b7160e01b600052604160045260246000fdfea2646970667358221220216ddc889c83668a16b40556d3dc23f6e1a9fa3333587b228a11c3a0d1fad80b64736f6c63430008060033";
+var deployedBytecode = "0x608060405234801561001057600080fd5b50600436106100ff5760003560e01c806380b29f7c11610097578063a7068d6611610066578063a7068d66146102b5578063e476af5c146102c8578063f00d4b5d146102db578063f96d0f9f146102ee57600080fd5b806380b29f7c146102695780638733d4e81461027c578063930726841461028f5780639c2c1b2b146102a257600080fd5b8063240cf1fa116100d3578063240cf1fa146101b1578063622b2a3c146101c457806370ae92d2146102365780637ad4b0a41461025657600080fd5b8062c023da14610104578063022914a7146101195780630d44625b1461015f578063123b5e981461019e575b600080fd5b610117610112366004610ea7565b61030e565b005b610142610127366004610dd2565b6000602081905290815260409020546001600160a01b031681565b6040516001600160a01b0390911681526020015b60405180910390f35b61019061016d366004610e27565b600160209081526000938452604080852082529284528284209052825290205481565b604051908152602001610156565b6101176101ac3660046110f7565b61031f565b6101176101bf366004610f5d565b6103ab565b6102266101d2366004610e27565b6001600160a01b039283166000908152600160209081526040808320815180840196909652815180870384018152958201825285519583019590952083529381528382209290941681529252902054421090565b6040519015158152602001610156565b610190610244366004610dd2565b60036020526000908152604090205481565b610117610264366004610efe565b61048d565b610117610277366004610e27565b6104a0565b61014261028a366004610dd2565b6104ac565b61011761029d366004610fb4565b6104dc565b6101176102b0366004611013565b6105c7565b6101176102c3366004610e63565b6106b5565b6101176102d636600461107d565b6106c2565b6101176102e9366004610df4565b610741565b6101906102fc366004610dd2565b60026020526000908152604090205481565b61031a83338484610750565b505050565b6000601960f81b81306003826103348d6104ac565b6001600160a01b03166001600160a01b03168152602001908152602001600020548b88888860405160200161037098979695949392919061123e565b6040516020818303038152906040528051906020012090506103a1886103998a8a8a8a87610824565b868686610923565b5050505050505050565b6000601960f81b81306003826103c08b6104ac565b6001600160a01b0316815260208082019290925260409081016000205481516001600160f81b0319968716818501529490951660218501526bffffffffffffffffffffffff19606093841b8116602286015260368501959095528a831b851660568501527f6368616e67654f776e6572000000000000000000000000000000000000000000606a8501529186901b90931660758301528051606981840301815260899092019052805191012090506104858661047f8188888887610824565b84610a07565b505050505050565b61049a8433858585610923565b50505050565b61031a83338484610b03565b6001600160a01b0380821660009081526020819052604081205490911680156104d55792915050565b5090919050565b6000601960f81b81306003826104f18c6104ac565b6001600160a01b0316815260208082019290925260409081016000205481516001600160f81b0319968716818501529490951660218501526bffffffffffffffffffffffff19606093841b8116602286015260368501959095528b831b851660568501527f7265766f6b6544656c6567617465000000000000000000000000000000000000606a850152607884018890529186901b90931660988301528051608c81840301815260ac9092019052805191012090506105be876105b78189898987610824565b8585610b03565b50505050505050565b6000601960f81b81306003826105dc8d6104ac565b6001600160a01b0316815260208082019290925260409081016000205490516001600160f81b031995861692810192909252929093166021840152606090811b6bffffffffffffffffffffffff19908116602285015260368401929092528a811b821660568401527f61646444656c6567617465000000000000000000000000000000000000000000606a8401526075830187905285901b16609582015260a9810183905260c9016040516020818303038152906040528051906020012090506103a1886106ad8a8a8a8a87610824565b868686610bfd565b61049a8433858585610bfd565b6000601960f81b81306003826106d78c6104ac565b6001600160a01b03166001600160a01b03168152602001908152602001600020548a878760405160200161071197969594939291906111a8565b6040516020818303038152906040528051906020012090506105be8761073a8989898987610824565b8585610750565b61074c823383610a07565b5050565b838361075b826104ac565b6001600160a01b0316816001600160a01b0316146107ac5760405162461bcd60e51b81526020600482015260096024820152683130b22fb0b1ba37b960b91b60448201526064015b60405180910390fd5b6001600160a01b0386166000818152600260205260408082205490517f18ab6b2ae3d64306c00ce663125f2bd680e441a098de1635bd7ad8b0d44965e4926107f9928992899291906112db565b60405180910390a25050506001600160a01b0390921660009081526002602052604090204390555050565b6040805160008082526020820180845284905260ff8716928201929092526060810185905260808101849052819060019060a0016020604051602081039080840390855afa15801561087a573d6000803e3d6000fd5b50505060206040510351905061088f876104ac565b6001600160a01b0316816001600160a01b0316146108ef5760405162461bcd60e51b815260206004820152600d60248201527f6261645f7369676e61747572650000000000000000000000000000000000000060448201526064016107a3565b6001600160a01b03811660009081526003602052604081208054916109138361134b565b9091555090979650505050505050565b848461092e826104ac565b6001600160a01b0316816001600160a01b03161461097a5760405162461bcd60e51b81526020600482015260096024820152683130b22fb0b1ba37b960b91b60448201526064016107a3565b6001600160a01b0387167f18ab6b2ae3d64306c00ce663125f2bd680e441a098de1635bd7ad8b0d44965e486866109b18742611307565b6001600160a01b038c16600090815260026020526040908190205490516109db94939291906112db565b60405180910390a25050506001600160a01b039093166000908152600260205260409020439055505050565b8282610a12826104ac565b6001600160a01b0316816001600160a01b031614610a5e5760405162461bcd60e51b81526020600482015260096024820152683130b22fb0b1ba37b960b91b60448201526064016107a3565b6001600160a01b0385811660008181526020818152604080832080547fffffffffffffffffffffffff000000000000000000000000000000000000000016958916958617905560028252918290205482519485529084015290917f38a5a6e68f30ed1ab45860a4afb34bcb2fc00f22ca462d249b8a8d40cda6f7a3910160405180910390a2505050506001600160a01b03166000908152600260205260409020439055565b8383610b0e826104ac565b6001600160a01b0316816001600160a01b031614610b5a5760405162461bcd60e51b81526020600482015260096024820152683130b22fb0b1ba37b960b91b60448201526064016107a3565b6001600160a01b03868116600081815260016020908152604080832081518084018b90528251808203850181528184018085528151918601919091208652918452828520968a16808652968452828520429081905586865260029094529190932054928990526060810194909452608084015260a0830152907f5a5084339536bcab65f20799fcc58724588145ca054bd2be626174b27ba156f79060c0016107f9565b8484610c08826104ac565b6001600160a01b0316816001600160a01b031614610c545760405162461bcd60e51b81526020600482015260096024820152683130b22fb0b1ba37b960b91b60448201526064016107a3565b610c5e8342611307565b6001600160a01b03888116600081815260016020908152604080832081518084018d9052825180820385018152908301835280519084012084528252808320948a16835293905291909120919091557f5a5084339536bcab65f20799fcc58724588145ca054bd2be626174b27ba156f78686610cda8742611307565b6001600160a01b038c8116600090815260026020908152604091829020548251968752949092169185019190915283015260608201526080016109db565b80356001600160a01b0381168114610d2f57600080fd5b919050565b600082601f830112610d4557600080fd5b813567ffffffffffffffff80821115610d6057610d6061137c565b604051601f8301601f19908116603f01168101908282118183101715610d8857610d8861137c565b81604052838152866020858801011115610da157600080fd5b836020870160208301376000602085830101528094505050505092915050565b803560ff81168114610d2f57600080fd5b600060208284031215610de457600080fd5b610ded82610d18565b9392505050565b60008060408385031215610e0757600080fd5b610e1083610d18565b9150610e1e60208401610d18565b90509250929050565b600080600060608486031215610e3c57600080fd5b610e4584610d18565b925060208401359150610e5a60408501610d18565b90509250925092565b60008060008060808587031215610e7957600080fd5b610e8285610d18565b935060208501359250610e9760408601610d18565b9396929550929360600135925050565b600080600060608486031215610ebc57600080fd5b610ec584610d18565b925060208401359150604084013567ffffffffffffffff811115610ee857600080fd5b610ef486828701610d34565b9150509250925092565b60008060008060808587031215610f1457600080fd5b610f1d85610d18565b935060208501359250604085013567ffffffffffffffff811115610f4057600080fd5b610f4c87828801610d34565b949793965093946060013593505050565b600080600080600060a08688031215610f7557600080fd5b610f7e86610d18565b9450610f8c60208701610dc1565b93506040860135925060608601359150610fa860808701610d18565b90509295509295909350565b60008060008060008060c08789031215610fcd57600080fd5b610fd687610d18565b9550610fe460208801610dc1565b945060408701359350606087013592506080870135915061100760a08801610d18565b90509295509295509295565b600080600080600080600060e0888a03121561102e57600080fd5b61103788610d18565b965061104560208901610dc1565b955060408801359450606088013593506080880135925061106860a08901610d18565b915060c0880135905092959891949750929550565b60008060008060008060c0878903121561109657600080fd5b61109f87610d18565b95506110ad60208801610dc1565b945060408701359350606087013592506080870135915060a087013567ffffffffffffffff8111156110de57600080fd5b6110ea89828a01610d34565b9150509295509295509295565b600080600080600080600060e0888a03121561111257600080fd5b61111b88610d18565b965061112960208901610dc1565b955060408801359450606088013593506080880135925060a088013567ffffffffffffffff81111561115a57600080fd5b6111668a828b01610d34565b92505060c0880135905092959891949750929550565b6000815180845261119481602086016020860161131f565b601f01601f19169290920160200192915050565b60006001600160f81b0319808a1683528089166001840152506bffffffffffffffffffffffff19808860601b166002840152866016840152808660601b166036840152507f7265766f6b654174747269627574650000000000000000000000000000000000604a830152836059830152825161122b81607985016020870161131f565b9190910160790198975050505050505050565b60006001600160f81b0319808b168352808a166001840152506bffffffffffffffffffffffff19808960601b166002840152876016840152808760601b166036840152507f7365744174747269627574650000000000000000000000000000000000000000604a83015284605683015283516112c181607685016020880161131f565b607692019182019290925260960198975050505050505050565b8481526080602082015260006112f4608083018661117c565b6040830194909452506060015292915050565b6000821982111561131a5761131a611366565b500190565b60005b8381101561133a578181015183820152602001611322565b8381111561049a5750506000910152565b600060001982141561135f5761135f611366565b5060010190565b634e487b7160e01b600052601160045260246000fd5b634e487b7160e01b600052604160045260246000fdfea2646970667358221220216ddc889c83668a16b40556d3dc23f6e1a9fa3333587b228a11c3a0d1fad80b64736f6c63430008060033";
+var linkReferences = {
+};
+var deployedLinkReferences = {
+};
+var EthereumDIDRegistry = {
+	_format: _format,
+	contractName: contractName,
+	sourceName: sourceName,
+	abi: abi,
+	bytecode: bytecode,
+	deployedBytecode: deployedBytecode,
+	linkReferences: linkReferences,
+	deployedLinkReferences: deployedLinkReferences
+};
+
+const infuraNames = {
+  polygon: 'matic',
+  'polygon:test': 'maticmum',
+  aurora: 'aurora-mainnet'
+};
+const knownInfuraNames = ['mainnet', 'ropsten', 'rinkeby', 'goerli', 'kovan', 'aurora'];
+
+function configureNetworksWithInfura(projectId) {
+  if (!projectId) {
+    return {};
+  }
+
+  const networks = knownInfuraNames.map(n => {
+    const existingDeployment = deployments.find(d => d.name === n);
+
+    if (existingDeployment && existingDeployment.name) {
+      const infuraName = infuraNames[existingDeployment.name] || existingDeployment.name;
+      const rpcUrl = `https://${infuraName}.infura.io/v3/${projectId}`;
+      return { ...existingDeployment,
+        rpcUrl
+      };
+    }
+  }).filter(conf => !!conf);
+  return configureNetworks({
+    networks
+  });
+}
+
+function getContractForNetwork(conf) {
+  var _conf$web;
+
+  let provider = conf.provider || ((_conf$web = conf.web3) == null ? void 0 : _conf$web.currentProvider);
+
+  if (!provider) {
+    if (conf.rpcUrl) {
+      var _deployments$find;
+
+      const chainIdRaw = conf.chainId ? conf.chainId : (_deployments$find = deployments.find(d => d.name === conf.name)) == null ? void 0 : _deployments$find.chainId;
+      const chainId = chainIdRaw ? bignumber.BigNumber.from(chainIdRaw).toNumber() : chainIdRaw;
+      provider = new providers.JsonRpcProvider(conf.rpcUrl, chainId || 'any');
+    } else {
+      throw new Error(`invalid_config: No web3 provider could be determined for network ${conf.name || conf.chainId}`);
+    }
+  }
+
+  const contract = contracts.ContractFactory.fromSolidity(EthereumDIDRegistry).attach(conf.registry || DEFAULT_REGISTRY_ADDRESS).connect(provider);
+  return contract;
+}
+
+function configureNetwork(net) {
+  var _deployments$find2;
+
+  const networks = {};
+  const chainId = net.chainId || ((_deployments$find2 = deployments.find(d => net.name && (d.name === net.name || d.description === net.name))) == null ? void 0 : _deployments$find2.chainId);
+
+  if (chainId) {
+    if (net.name) {
+      networks[net.name] = getContractForNetwork(net);
+    }
+
+    const id = typeof chainId === 'number' ? `0x${chainId.toString(16)}` : chainId;
+    networks[id] = getContractForNetwork(net);
+  } else if (net.provider || net.web3 || net.rpcUrl) {
+    networks[net.name || ''] = getContractForNetwork(net);
+  }
+
+  return networks;
+}
+
+function configureNetworks(conf) {
+  var _conf$networks;
+
+  return { ...configureNetwork(conf),
+    ...((_conf$networks = conf.networks) == null ? void 0 : _conf$networks.reduce((networks, net) => {
+      return { ...networks,
+        ...configureNetwork(net)
+      };
+    }, {}))
+  };
+}
+/**
+ * Generates a configuration that maps ethereum network names and chainIDs to the respective ERC1056 contracts deployed
+ * on them.
+ * @returns a record of ERC1056 `Contract` instances
+ * @param conf - configuration options for the resolver. An array of network details.
+ * Each network entry should contain at least one of `name` or `chainId` AND one of `provider`, `web3`, or `rpcUrl`
+ * For convenience, you can also specify an `infuraProjectId` which will create a mapping for all the networks
+ *   supported by https://infura.io.
+ * @example ```js
+ * [
+ *   { name: 'development', registry: '0x9af37603e98e0dc2b855be647c39abe984fc2445', rpcUrl: 'http://127.0.0.1:8545/' },
+ *   { name: 'goerli', chainId: 5, provider: new InfuraProvider('goerli') },
+ *   { name: 'rinkeby', provider: new AlchemyProvider('rinkeby') },
+ *   { name: 'rsk:testnet', chainId: '0x1f', rpcUrl: 'https://public-node.testnet.rsk.co' },
+ * ]
+ * ```
+ */
+
+
+function configureResolverWithNetworks(conf = {}) {
+  const networks = { ...configureNetworksWithInfura(conf.infuraProjectId),
+    ...configureNetworks(conf)
+  };
+
+  if (Object.keys(networks).length === 0) {
+    throw new Error('invalid_config: Please make sure to have at least one network');
+  }
+
+  return networks;
+}
+
+const HashZero = "0x0000000000000000000000000000000000000000000000000000000000000000";
+
+const version$1 = "logger/5.6.0";
+
+let _permanentCensorErrors = false;
+let _censorErrors = false;
+const LogLevels = { debug: 1, "default": 2, info: 2, warning: 3, error: 4, off: 5 };
+let _logLevel = LogLevels["default"];
+let _globalLogger = null;
+function _checkNormalize() {
+    try {
+        const missing = [];
+        // Make sure all forms of normalization are supported
+        ["NFD", "NFC", "NFKD", "NFKC"].forEach((form) => {
+            try {
+                if ("test".normalize(form) !== "test") {
+                    throw new Error("bad normalize");
+                }
+                ;
+            }
+            catch (error) {
+                missing.push(form);
+            }
+        });
+        if (missing.length) {
+            throw new Error("missing " + missing.join(", "));
+        }
+        if (String.fromCharCode(0xe9).normalize("NFD") !== String.fromCharCode(0x65, 0x0301)) {
+            throw new Error("broken implementation");
+        }
+    }
+    catch (error) {
+        return error.message;
+    }
+    return null;
+}
+const _normalizeError = _checkNormalize();
+var LogLevel;
+(function (LogLevel) {
+    LogLevel["DEBUG"] = "DEBUG";
+    LogLevel["INFO"] = "INFO";
+    LogLevel["WARNING"] = "WARNING";
+    LogLevel["ERROR"] = "ERROR";
+    LogLevel["OFF"] = "OFF";
+})(LogLevel || (LogLevel = {}));
+var ErrorCode;
+(function (ErrorCode) {
+    ///////////////////
+    // Generic Errors
+    // Unknown Error
+    ErrorCode["UNKNOWN_ERROR"] = "UNKNOWN_ERROR";
+    // Not Implemented
+    ErrorCode["NOT_IMPLEMENTED"] = "NOT_IMPLEMENTED";
+    // Unsupported Operation
+    //   - operation
+    ErrorCode["UNSUPPORTED_OPERATION"] = "UNSUPPORTED_OPERATION";
+    // Network Error (i.e. Ethereum Network, such as an invalid chain ID)
+    //   - event ("noNetwork" is not re-thrown in provider.ready; otherwise thrown)
+    ErrorCode["NETWORK_ERROR"] = "NETWORK_ERROR";
+    // Some sort of bad response from the server
+    ErrorCode["SERVER_ERROR"] = "SERVER_ERROR";
+    // Timeout
+    ErrorCode["TIMEOUT"] = "TIMEOUT";
+    ///////////////////
+    // Operational  Errors
+    // Buffer Overrun
+    ErrorCode["BUFFER_OVERRUN"] = "BUFFER_OVERRUN";
+    // Numeric Fault
+    //   - operation: the operation being executed
+    //   - fault: the reason this faulted
+    ErrorCode["NUMERIC_FAULT"] = "NUMERIC_FAULT";
+    ///////////////////
+    // Argument Errors
+    // Missing new operator to an object
+    //  - name: The name of the class
+    ErrorCode["MISSING_NEW"] = "MISSING_NEW";
+    // Invalid argument (e.g. value is incompatible with type) to a function:
+    //   - argument: The argument name that was invalid
+    //   - value: The value of the argument
+    ErrorCode["INVALID_ARGUMENT"] = "INVALID_ARGUMENT";
+    // Missing argument to a function:
+    //   - count: The number of arguments received
+    //   - expectedCount: The number of arguments expected
+    ErrorCode["MISSING_ARGUMENT"] = "MISSING_ARGUMENT";
+    // Too many arguments
+    //   - count: The number of arguments received
+    //   - expectedCount: The number of arguments expected
+    ErrorCode["UNEXPECTED_ARGUMENT"] = "UNEXPECTED_ARGUMENT";
+    ///////////////////
+    // Blockchain Errors
+    // Call exception
+    //  - transaction: the transaction
+    //  - address?: the contract address
+    //  - args?: The arguments passed into the function
+    //  - method?: The Solidity method signature
+    //  - errorSignature?: The EIP848 error signature
+    //  - errorArgs?: The EIP848 error parameters
+    //  - reason: The reason (only for EIP848 "Error(string)")
+    ErrorCode["CALL_EXCEPTION"] = "CALL_EXCEPTION";
+    // Insufficient funds (< value + gasLimit * gasPrice)
+    //   - transaction: the transaction attempted
+    ErrorCode["INSUFFICIENT_FUNDS"] = "INSUFFICIENT_FUNDS";
+    // Nonce has already been used
+    //   - transaction: the transaction attempted
+    ErrorCode["NONCE_EXPIRED"] = "NONCE_EXPIRED";
+    // The replacement fee for the transaction is too low
+    //   - transaction: the transaction attempted
+    ErrorCode["REPLACEMENT_UNDERPRICED"] = "REPLACEMENT_UNDERPRICED";
+    // The gas limit could not be estimated
+    //   - transaction: the transaction passed to estimateGas
+    ErrorCode["UNPREDICTABLE_GAS_LIMIT"] = "UNPREDICTABLE_GAS_LIMIT";
+    // The transaction was replaced by one with a higher gas price
+    //   - reason: "cancelled", "replaced" or "repriced"
+    //   - cancelled: true if reason == "cancelled" or reason == "replaced")
+    //   - hash: original transaction hash
+    //   - replacement: the full TransactionsResponse for the replacement
+    //   - receipt: the receipt of the replacement
+    ErrorCode["TRANSACTION_REPLACED"] = "TRANSACTION_REPLACED";
+})(ErrorCode || (ErrorCode = {}));
+const HEX = "0123456789abcdef";
+class Logger {
+    constructor(version) {
+        Object.defineProperty(this, "version", {
+            enumerable: true,
+            value: version,
+            writable: false
+        });
+    }
+    _log(logLevel, args) {
+        const level = logLevel.toLowerCase();
+        if (LogLevels[level] == null) {
+            this.throwArgumentError("invalid log level name", "logLevel", logLevel);
+        }
+        if (_logLevel > LogLevels[level]) {
+            return;
+        }
+        console.log.apply(console, args);
+    }
+    debug(...args) {
+        this._log(Logger.levels.DEBUG, args);
+    }
+    info(...args) {
+        this._log(Logger.levels.INFO, args);
+    }
+    warn(...args) {
+        this._log(Logger.levels.WARNING, args);
+    }
+    makeError(message, code, params) {
+        // Errors are being censored
+        if (_censorErrors) {
+            return this.makeError("censored error", code, {});
+        }
+        if (!code) {
+            code = Logger.errors.UNKNOWN_ERROR;
+        }
+        if (!params) {
+            params = {};
+        }
+        const messageDetails = [];
+        Object.keys(params).forEach((key) => {
+            const value = params[key];
+            try {
+                if (value instanceof Uint8Array) {
+                    let hex = "";
+                    for (let i = 0; i < value.length; i++) {
+                        hex += HEX[value[i] >> 4];
+                        hex += HEX[value[i] & 0x0f];
+                    }
+                    messageDetails.push(key + "=Uint8Array(0x" + hex + ")");
+                }
+                else {
+                    messageDetails.push(key + "=" + JSON.stringify(value));
+                }
+            }
+            catch (error) {
+                messageDetails.push(key + "=" + JSON.stringify(params[key].toString()));
+            }
+        });
+        messageDetails.push(`code=${code}`);
+        messageDetails.push(`version=${this.version}`);
+        const reason = message;
+        let url = "";
+        switch (code) {
+            case ErrorCode.NUMERIC_FAULT: {
+                url = "NUMERIC_FAULT";
+                const fault = message;
+                switch (fault) {
+                    case "overflow":
+                    case "underflow":
+                    case "division-by-zero":
+                        url += "-" + fault;
+                        break;
+                    case "negative-power":
+                    case "negative-width":
+                        url += "-unsupported";
+                        break;
+                    case "unbound-bitwise-result":
+                        url += "-unbound-result";
+                        break;
+                }
+                break;
+            }
+            case ErrorCode.CALL_EXCEPTION:
+            case ErrorCode.INSUFFICIENT_FUNDS:
+            case ErrorCode.MISSING_NEW:
+            case ErrorCode.NONCE_EXPIRED:
+            case ErrorCode.REPLACEMENT_UNDERPRICED:
+            case ErrorCode.TRANSACTION_REPLACED:
+            case ErrorCode.UNPREDICTABLE_GAS_LIMIT:
+                url = code;
+                break;
+        }
+        if (url) {
+            message += " [ See: https:/\/links.ethers.org/v5-errors-" + url + " ]";
+        }
+        if (messageDetails.length) {
+            message += " (" + messageDetails.join(", ") + ")";
+        }
+        // @TODO: Any??
+        const error = new Error(message);
+        error.reason = reason;
+        error.code = code;
+        Object.keys(params).forEach(function (key) {
+            error[key] = params[key];
+        });
+        return error;
+    }
+    throwError(message, code, params) {
+        throw this.makeError(message, code, params);
+    }
+    throwArgumentError(message, name, value) {
+        return this.throwError(message, Logger.errors.INVALID_ARGUMENT, {
+            argument: name,
+            value: value
+        });
+    }
+    assert(condition, message, code, params) {
+        if (!!condition) {
+            return;
+        }
+        this.throwError(message, code, params);
+    }
+    assertArgument(condition, message, name, value) {
+        if (!!condition) {
+            return;
+        }
+        this.throwArgumentError(message, name, value);
+    }
+    checkNormalize(message) {
+        if (_normalizeError) {
+            this.throwError("platform missing String.prototype.normalize", Logger.errors.UNSUPPORTED_OPERATION, {
+                operation: "String.prototype.normalize", form: _normalizeError
+            });
+        }
+    }
+    checkSafeUint53(value, message) {
+        if (typeof (value) !== "number") {
+            return;
+        }
+        if (message == null) {
+            message = "value not safe";
+        }
+        if (value < 0 || value >= 0x1fffffffffffff) {
+            this.throwError(message, Logger.errors.NUMERIC_FAULT, {
+                operation: "checkSafeInteger",
+                fault: "out-of-safe-range",
+                value: value
+            });
+        }
+        if (value % 1) {
+            this.throwError(message, Logger.errors.NUMERIC_FAULT, {
+                operation: "checkSafeInteger",
+                fault: "non-integer",
+                value: value
+            });
+        }
+    }
+    checkArgumentCount(count, expectedCount, message) {
+        if (message) {
+            message = ": " + message;
+        }
+        else {
+            message = "";
+        }
+        if (count < expectedCount) {
+            this.throwError("missing argument" + message, Logger.errors.MISSING_ARGUMENT, {
+                count: count,
+                expectedCount: expectedCount
+            });
+        }
+        if (count > expectedCount) {
+            this.throwError("too many arguments" + message, Logger.errors.UNEXPECTED_ARGUMENT, {
+                count: count,
+                expectedCount: expectedCount
+            });
+        }
+    }
+    checkNew(target, kind) {
+        if (target === Object || target == null) {
+            this.throwError("missing new", Logger.errors.MISSING_NEW, { name: kind.name });
+        }
+    }
+    checkAbstract(target, kind) {
+        if (target === kind) {
+            this.throwError("cannot instantiate abstract class " + JSON.stringify(kind.name) + " directly; use a sub-class", Logger.errors.UNSUPPORTED_OPERATION, { name: target.name, operation: "new" });
+        }
+        else if (target === Object || target == null) {
+            this.throwError("missing new", Logger.errors.MISSING_NEW, { name: kind.name });
+        }
+    }
+    static globalLogger() {
+        if (!_globalLogger) {
+            _globalLogger = new Logger(version$1);
+        }
+        return _globalLogger;
+    }
+    static setCensorship(censorship, permanent) {
+        if (!censorship && permanent) {
+            this.globalLogger().throwError("cannot permanently disable censorship", Logger.errors.UNSUPPORTED_OPERATION, {
+                operation: "setCensorship"
+            });
+        }
+        if (_permanentCensorErrors) {
+            if (!censorship) {
+                return;
+            }
+            this.globalLogger().throwError("error censorship permanent", Logger.errors.UNSUPPORTED_OPERATION, {
+                operation: "setCensorship"
+            });
+        }
+        _censorErrors = !!censorship;
+        _permanentCensorErrors = !!permanent;
+    }
+    static setLogLevel(logLevel) {
+        const level = LogLevels[logLevel.toLowerCase()];
+        if (level == null) {
+            Logger.globalLogger().warn("invalid log level - " + logLevel);
+            return;
+        }
+        _logLevel = level;
+    }
+    static from(version) {
+        return new Logger(version);
+    }
+}
+Logger.errors = ErrorCode;
+Logger.levels = LogLevel;
+
+const version = "strings/5.6.1";
+
+const logger = new Logger(version);
+///////////////////////////////
+var UnicodeNormalizationForm;
+(function (UnicodeNormalizationForm) {
+    UnicodeNormalizationForm["current"] = "";
+    UnicodeNormalizationForm["NFC"] = "NFC";
+    UnicodeNormalizationForm["NFD"] = "NFD";
+    UnicodeNormalizationForm["NFKC"] = "NFKC";
+    UnicodeNormalizationForm["NFKD"] = "NFKD";
+})(UnicodeNormalizationForm || (UnicodeNormalizationForm = {}));
+var Utf8ErrorReason;
+(function (Utf8ErrorReason) {
+    // A continuation byte was present where there was nothing to continue
+    // - offset = the index the codepoint began in
+    Utf8ErrorReason["UNEXPECTED_CONTINUE"] = "unexpected continuation byte";
+    // An invalid (non-continuation) byte to start a UTF-8 codepoint was found
+    // - offset = the index the codepoint began in
+    Utf8ErrorReason["BAD_PREFIX"] = "bad codepoint prefix";
+    // The string is too short to process the expected codepoint
+    // - offset = the index the codepoint began in
+    Utf8ErrorReason["OVERRUN"] = "string overrun";
+    // A missing continuation byte was expected but not found
+    // - offset = the index the continuation byte was expected at
+    Utf8ErrorReason["MISSING_CONTINUE"] = "missing continuation byte";
+    // The computed code point is outside the range for UTF-8
+    // - offset       = start of this codepoint
+    // - badCodepoint = the computed codepoint; outside the UTF-8 range
+    Utf8ErrorReason["OUT_OF_RANGE"] = "out of UTF-8 range";
+    // UTF-8 strings may not contain UTF-16 surrogate pairs
+    // - offset       = start of this codepoint
+    // - badCodepoint = the computed codepoint; inside the UTF-16 surrogate range
+    Utf8ErrorReason["UTF16_SURROGATE"] = "UTF-16 surrogate";
+    // The string is an overlong representation
+    // - offset       = start of this codepoint
+    // - badCodepoint = the computed codepoint; already bounds checked
+    Utf8ErrorReason["OVERLONG"] = "overlong representation";
+})(Utf8ErrorReason || (Utf8ErrorReason = {}));
+function errorFunc(reason, offset, bytes, output, badCodepoint) {
+    return logger.throwArgumentError(`invalid codepoint at offset ${offset}; ${reason}`, "bytes", bytes);
+}
+function ignoreFunc(reason, offset, bytes, output, badCodepoint) {
+    // If there is an invalid prefix (including stray continuation), skip any additional continuation bytes
+    if (reason === Utf8ErrorReason.BAD_PREFIX || reason === Utf8ErrorReason.UNEXPECTED_CONTINUE) {
+        let i = 0;
+        for (let o = offset + 1; o < bytes.length; o++) {
+            if (bytes[o] >> 6 !== 0x02) {
+                break;
+            }
+            i++;
+        }
+        return i;
+    }
+    // This byte runs us past the end of the string, so just jump to the end
+    // (but the first byte was read already read and therefore skipped)
+    if (reason === Utf8ErrorReason.OVERRUN) {
+        return bytes.length - offset - 1;
+    }
+    // Nothing to skip
+    return 0;
+}
+function replaceFunc(reason, offset, bytes, output, badCodepoint) {
+    // Overlong representations are otherwise "valid" code points; just non-deistingtished
+    if (reason === Utf8ErrorReason.OVERLONG) {
+        output.push(badCodepoint);
+        return 0;
+    }
+    // Put the replacement character into the output
+    output.push(0xfffd);
+    // Otherwise, process as if ignoring errors
+    return ignoreFunc(reason, offset, bytes);
+}
+// Common error handing strategies
+Object.freeze({
+    error: errorFunc,
+    ignore: ignoreFunc,
+    replace: replaceFunc
+});
+// http://stackoverflow.com/questions/18729405/how-to-convert-utf8-string-to-byte-array
+function toUtf8Bytes(str, form = UnicodeNormalizationForm.current) {
+    if (form != UnicodeNormalizationForm.current) {
+        logger.checkNormalize();
+        str = str.normalize(form);
+    }
+    let result = [];
+    for (let i = 0; i < str.length; i++) {
+        const c = str.charCodeAt(i);
+        if (c < 0x80) {
+            result.push(c);
+        }
+        else if (c < 0x800) {
+            result.push((c >> 6) | 0xc0);
+            result.push((c & 0x3f) | 0x80);
+        }
+        else if ((c & 0xfc00) == 0xd800) {
+            i++;
+            const c2 = str.charCodeAt(i);
+            if (i >= str.length || (c2 & 0xfc00) !== 0xdc00) {
+                throw new Error("invalid utf-8 string");
+            }
+            // Surrogate Pair
+            const pair = 0x10000 + ((c & 0x03ff) << 10) + (c2 & 0x03ff);
+            result.push((pair >> 18) | 0xf0);
+            result.push(((pair >> 12) & 0x3f) | 0x80);
+            result.push(((pair >> 6) & 0x3f) | 0x80);
+            result.push((pair & 0x3f) | 0x80);
+        }
+        else {
+            result.push((c >> 12) | 0xe0);
+            result.push(((c >> 6) & 0x3f) | 0x80);
+            result.push((c & 0x3f) | 0x80);
+        }
+    }
+    return bytes.arrayify(result);
+}
+
+function formatBytes32String(text) {
+    // Get the bytes
+    const bytes$1 = toUtf8Bytes(text);
+    // Check we have room for null-termination
+    if (bytes$1.length > 31) {
+        throw new Error("bytes32 string must be less than 32 bytes");
+    }
+    // Zero-pad (implicitly null-terminates)
+    return bytes.hexlify(bytes.concat([bytes$1, HashZero]).slice(0, 32));
+}
+
+/**
+ * A class that can be used to interact with the ERC1056 contract on behalf of a local controller key-pair
+ */
+
+class EthrDidController {
+  /**
+   * Creates an EthrDidController instance.
+   *
+   * @param identifier - required - a `did:ethr` string or a publicKeyHex or an ethereum address
+   * @param signer - optional - a Signer that represents the current controller key (owner) of the identifier. If a
+   *   'signer' is not provided, then a 'contract' with an attached signer can be used.
+   * @param contract - optional - a Contract instance representing a ERC1056 contract. At least one of `contract`,
+   *   `provider`, or `rpcUrl` is required
+   * @param chainNameOrId - optional - the network name or chainID, defaults to 'mainnet'
+   * @param provider - optional - a web3 Provider. At least one of `contract`, `provider`, or `rpcUrl` is required
+   * @param rpcUrl - optional - a JSON-RPC URL that can be used to connect to an ethereum network. At least one of
+   *   `contract`, `provider`, or `rpcUrl` is required
+   * @param registry - optional - The ERC1056 registry address. Defaults to
+   *   '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b'. Only used with 'provider' or 'rpcUrl'
+   * @param legacyNonce - optional - If the legacy nonce tracking method should be accounted for. If lesser version of
+   *   did-ethr-registry contract v1.0.0 is used then this should be true.
+   */
+  constructor(identifier, contract, signer, chainNameOrId = 'mainnet', provider, rpcUrl, registry = DEFAULT_REGISTRY_ADDRESS, legacyNonce = true) {
+    this.contract = void 0;
+    this.signer = void 0;
+    this.address = void 0;
+    this.did = void 0;
+    this.legacyNonce = void 0;
+    this.legacyNonce = legacyNonce; // initialize identifier
+
+    const {
+      address,
+      publicKey,
+      network
+    } = interpretIdentifier(identifier);
+    const net = network || chainNameOrId; // initialize contract connection
+
+    if (contract) {
+      this.contract = contract;
+    } else if (provider || signer != null && signer.provider || rpcUrl) {
+      const prov = provider || (signer == null ? void 0 : signer.provider);
+      this.contract = getContractForNetwork({
+        name: net,
+        provider: prov,
+        registry,
+        rpcUrl
+      });
+    } else {
+      throw new Error(' either a contract instance or a provider or rpcUrl is required to initialize');
+    }
+
+    this.signer = signer;
+    this.address = address;
+    let networkString = net ? `${net}:` : '';
+
+    if (networkString in ['mainnet:', '0x1:']) {
+      networkString = '';
+    }
+
+    this.did = publicKey ? `did:ethr:${networkString}${publicKey}` : `did:ethr:${networkString}${address}`;
+  }
+
+  getOwner(address, blockTag) {
+    try {
+      const _this = this;
+
+      return Promise.resolve(_this.contract.functions.identityOwner(address, {
+        blockTag
+      })).then(function (result) {
+        return result[0];
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  attachContract(controller) {
+    try {
+      const _this2 = this;
+
+      return Promise.resolve(controller ? controller : _this2.getOwner(_this2.address, 'latest')).then(function (currentOwner) {
+        const signer = _this2.signer ? _this2.signer : _this2.contract.provider.getSigner(currentOwner) || _this2.contract.signer;
+        return _this2.contract.connect(signer);
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  changeOwner(newOwner, options = {}) {
+    try {
+      const _this3 = this;
+
+      // console.log(`changing owner for ${oldOwner} on registry at ${registryContract.address}`)
+      const overrides = {
+        gasLimit: 123456,
+        gasPrice: 1000000000,
+        ...options
+      };
+      return Promise.resolve(_this3.attachContract(overrides.from)).then(function (contract) {
+        delete overrides.from;
+        return Promise.resolve(contract.functions.changeOwner(_this3.address, newOwner, overrides)).then(function (ownerChange) {
+          return Promise.resolve(ownerChange.wait());
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  createChangeOwnerHash(newOwner) {
+    try {
+      const _this4 = this;
+
+      return Promise.resolve(_this4.getPaddedNonceCompatibility()).then(function (paddedNonce) {
+        const dataToHash = bytes.hexConcat([MESSAGE_PREFIX, _this4.contract.address, paddedNonce, _this4.address, bytes.concat([toUtf8Bytes('changeOwner'), newOwner])]);
+        return keccak256.keccak256(dataToHash);
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  changeOwnerSigned(newOwner, metaSignature, options = {}) {
+    try {
+      const _this5 = this;
+
+      const overrides = {
+        gasLimit: 123456,
+        gasPrice: 1000000000,
+        ...options
+      };
+      return Promise.resolve(_this5.attachContract(overrides.from)).then(function (contract) {
+        delete overrides.from;
+        return Promise.resolve(contract.functions.changeOwnerSigned(_this5.address, metaSignature.sigV, metaSignature.sigR, metaSignature.sigS, newOwner, overrides)).then(function (ownerChange) {
+          return Promise.resolve(ownerChange.wait());
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  addDelegate(delegateType, delegateAddress, exp, options = {}) {
+    try {
+      const _this6 = this;
+
+      const overrides = {
+        gasLimit: 123456,
+        gasPrice: 1000000000,
+        ...options
+      };
+      return Promise.resolve(_this6.attachContract(overrides.from)).then(function (contract) {
+        delete overrides.from;
+        const delegateTypeBytes = stringToBytes32(delegateType);
+        return Promise.resolve(contract.functions.addDelegate(_this6.address, delegateTypeBytes, delegateAddress, exp, overrides)).then(function (addDelegateTx) {
+          return Promise.resolve(addDelegateTx.wait());
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  createAddDelegateHash(delegateType, delegateAddress, exp) {
+    try {
+      const _this7 = this;
+
+      return Promise.resolve(_this7.getPaddedNonceCompatibility()).then(function (paddedNonce) {
+        const dataToHash = bytes.hexConcat([MESSAGE_PREFIX, _this7.contract.address, paddedNonce, _this7.address, bytes.concat([toUtf8Bytes('addDelegate'), formatBytes32String(delegateType), delegateAddress, bytes.zeroPad(bytes.hexlify(exp), 32)])]);
+        return keccak256.keccak256(dataToHash);
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  addDelegateSigned(delegateType, delegateAddress, exp, metaSignature, options = {}) {
+    try {
+      const _this8 = this;
+
+      const overrides = {
+        gasLimit: 123456,
+        gasPrice: 1000000000,
+        ...options
+      };
+      return Promise.resolve(_this8.attachContract(overrides.from)).then(function (contract) {
+        delete overrides.from;
+        const delegateTypeBytes = stringToBytes32(delegateType);
+        return Promise.resolve(contract.functions.addDelegateSigned(_this8.address, metaSignature.sigV, metaSignature.sigR, metaSignature.sigS, delegateTypeBytes, delegateAddress, exp, overrides)).then(function (addDelegateTx) {
+          return Promise.resolve(addDelegateTx.wait());
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  revokeDelegate(delegateType, delegateAddress, options = {}) {
+    try {
+      const _this9 = this;
+
+      const overrides = {
+        gasLimit: 123456,
+        gasPrice: 1000000000,
+        ...options
+      };
+      delegateType = delegateType.startsWith('0x') ? delegateType : stringToBytes32(delegateType);
+      return Promise.resolve(_this9.attachContract(overrides.from)).then(function (contract) {
+        delete overrides.from;
+        return Promise.resolve(contract.functions.revokeDelegate(_this9.address, delegateType, delegateAddress, overrides)).then(function (addDelegateTx) {
+          return Promise.resolve(addDelegateTx.wait());
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  createRevokeDelegateHash(delegateType, delegateAddress) {
+    try {
+      const _this10 = this;
+
+      return Promise.resolve(_this10.getPaddedNonceCompatibility()).then(function (paddedNonce) {
+        const dataToHash = bytes.hexConcat([MESSAGE_PREFIX, _this10.contract.address, paddedNonce, _this10.address, bytes.concat([toUtf8Bytes('revokeDelegate'), formatBytes32String(delegateType), delegateAddress])]);
+        return keccak256.keccak256(dataToHash);
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  revokeDelegateSigned(delegateType, delegateAddress, metaSignature, options = {}) {
+    try {
+      const _this11 = this;
+
+      const overrides = {
+        gasLimit: 123456,
+        gasPrice: 1000000000,
+        ...options
+      };
+      delegateType = delegateType.startsWith('0x') ? delegateType : stringToBytes32(delegateType);
+      return Promise.resolve(_this11.attachContract(overrides.from)).then(function (contract) {
+        delete overrides.from;
+        return Promise.resolve(contract.functions.revokeDelegateSigned(_this11.address, metaSignature.sigV, metaSignature.sigR, metaSignature.sigS, delegateType, delegateAddress, overrides)).then(function (addDelegateTx) {
+          return Promise.resolve(addDelegateTx.wait());
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  setAttribute(attrName, attrValue, exp, options = {}) {
+    try {
+      const _this12 = this;
+
+      const overrides = {
+        gasLimit: 123456,
+        gasPrice: 1000000000,
+        controller: undefined,
+        ...options
+      };
+      attrName = attrName.startsWith('0x') ? attrName : stringToBytes32(attrName);
+      attrValue = attrValue.startsWith('0x') ? attrValue : '0x' + Buffer.from(attrValue, 'utf-8').toString('hex');
+      return Promise.resolve(_this12.attachContract(overrides.from)).then(function (contract) {
+        delete overrides.from;
+        return Promise.resolve(contract.functions.setAttribute(_this12.address, attrName, attrValue, exp, overrides)).then(function (setAttrTx) {
+          return Promise.resolve(setAttrTx.wait());
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  createSetAttributeHash(attrName, attrValue, exp) {
+    try {
+      const _this13 = this;
+
+      return Promise.resolve(_this13.getPaddedNonceCompatibility(true)).then(function (paddedNonce) {
+        // The incoming attribute value may be a hex encoded key, or an utf8 encoded string (like service endpoints)
+        const encodedValue = bytes.isHexString(attrValue) ? attrValue : toUtf8Bytes(attrValue);
+        const dataToHash = bytes.hexConcat([MESSAGE_PREFIX, _this13.contract.address, paddedNonce, _this13.address, bytes.concat([toUtf8Bytes('setAttribute'), formatBytes32String(attrName), encodedValue, bytes.zeroPad(bytes.hexlify(exp), 32)])]);
+        return keccak256.keccak256(dataToHash);
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  setAttributeSigned(attrName, attrValue, exp, metaSignature, options = {}) {
+    try {
+      const _this14 = this;
+
+      const overrides = {
+        gasLimit: 123456,
+        gasPrice: 1000000000,
+        controller: undefined,
+        ...options
+      };
+      attrName = attrName.startsWith('0x') ? attrName : stringToBytes32(attrName);
+      attrValue = attrValue.startsWith('0x') ? attrValue : '0x' + Buffer.from(attrValue, 'utf-8').toString('hex');
+      return Promise.resolve(_this14.attachContract(overrides.from)).then(function (contract) {
+        delete overrides.from;
+        return Promise.resolve(contract.functions.setAttributeSigned(_this14.address, metaSignature.sigV, metaSignature.sigR, metaSignature.sigS, attrName, attrValue, exp, overrides)).then(function (setAttrTx) {
+          return Promise.resolve(setAttrTx.wait());
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  revokeAttribute(attrName, attrValue, options = {}) {
+    try {
+      const _this15 = this;
+
+      // console.log(`revoking attribute ${attrName}(${attrValue}) for ${identity}`)
+      const overrides = {
+        gasLimit: 123456,
+        gasPrice: 1000000000,
+        ...options
+      };
+      attrName = attrName.startsWith('0x') ? attrName : stringToBytes32(attrName);
+      attrValue = attrValue.startsWith('0x') ? attrValue : '0x' + Buffer.from(attrValue, 'utf-8').toString('hex');
+      return Promise.resolve(_this15.attachContract(overrides.from)).then(function (contract) {
+        delete overrides.from;
+        return Promise.resolve(contract.functions.revokeAttribute(_this15.address, attrName, attrValue, overrides)).then(function (revokeAttributeTX) {
+          return Promise.resolve(revokeAttributeTX.wait());
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  createRevokeAttributeHash(attrName, attrValue) {
+    try {
+      const _this16 = this;
+
+      return Promise.resolve(_this16.getPaddedNonceCompatibility(true)).then(function (paddedNonce) {
+        const dataToHash = bytes.hexConcat([MESSAGE_PREFIX, _this16.contract.address, paddedNonce, _this16.address, bytes.concat([toUtf8Bytes('revokeAttribute'), formatBytes32String(attrName), toUtf8Bytes(attrValue)])]);
+        return keccak256.keccak256(dataToHash);
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+  /**
+   * The legacy version of the ethr-did-registry contract tracks the nonce as a property of the original owner, and not
+   * as a property of the signer (current owner). That's why we need to differentiate between deployments here, or
+   * otherwise our signature will be computed wrong resulting in a failed TX.
+   *
+   * Not only that, but the nonce is loaded differently for [set/revoke]AttributeSigned methods.
+   */
+
+
+  getPaddedNonceCompatibility(attribute = false) {
+    try {
+      const _this17 = this;
+
+      function _temp2() {
+        return Promise.resolve(_this17.contract.nonce(nonceKey)).then(function (_this17$contract$nonc) {
+          return bytes.zeroPad(bytes.arrayify(_this17$contract$nonc), 32);
+        });
+      }
+
+      let nonceKey;
+
+      const _temp = function () {
+        if (_this17.legacyNonce && attribute) {
+          nonceKey = _this17.address;
+        } else {
+          return Promise.resolve(_this17.getOwner(_this17.address)).then(function (_this17$getOwner) {
+            nonceKey = _this17$getOwner;
+          });
+        }
+      }();
+
+      return Promise.resolve(_temp && _temp.then ? _temp.then(_temp2) : _temp2(_temp));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  revokeAttributeSigned(attrName, attrValue, metaSignature, options = {}) {
+    try {
+      const _this18 = this;
+
+      // console.log(`revoking attribute ${attrName}(${attrValue}) for ${identity}`)
+      const overrides = {
+        gasLimit: 123456,
+        gasPrice: 1000000000,
+        ...options
+      };
+      attrName = attrName.startsWith('0x') ? attrName : stringToBytes32(attrName);
+      attrValue = attrValue.startsWith('0x') ? attrValue : '0x' + Buffer.from(attrValue, 'utf-8').toString('hex');
+      return Promise.resolve(_this18.attachContract(overrides.from)).then(function (contract) {
+        delete overrides.from;
+        return Promise.resolve(contract.functions.revokeAttributeSigned(_this18.address, metaSignature.sigV, metaSignature.sigR, metaSignature.sigS, attrName, attrValue, overrides)).then(function (revokeAttributeTX) {
+          return Promise.resolve(revokeAttributeTX.wait());
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+}
+
+function populateEventMetaClass(logResult, blockNumber) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const result = {};
+
+  if (logResult.eventFragment.inputs.length !== logResult.args.length) {
+    throw new TypeError('malformed event input. wrong number of arguments');
+  }
+
+  logResult.eventFragment.inputs.forEach((input, index) => {
+    let val = logResult.args[index];
+
+    if (typeof val === 'object') {
+      val = bignumber.BigNumber.from(val);
+    }
+
+    if (input.type === 'bytes32') {
+      val = bytes32toString(val);
+    }
+
+    result[input.name] = val;
+  });
+  result._eventName = logResult.name;
+  result.blockNumber = blockNumber;
+  return result;
+}
+
+function logDecoder(contract, logs) {
+  const results = logs.map(log => {
+    const res = contract.interface.parseLog(log);
+    const event = populateEventMetaClass(res, log.blockNumber);
+    return event;
+  });
+  return results;
+}
+
+function _settle(pact, state, value) {
+  if (!pact.s) {
+    if (value instanceof _Pact) {
+      if (value.s) {
+        if (state & 1) {
+          state = value.s;
+        }
+
+        value = value.v;
+      } else {
+        value.o = _settle.bind(null, pact, state);
+        return;
+      }
+    }
+
+    if (value && value.then) {
+      value.then(_settle.bind(null, pact, state), _settle.bind(null, pact, 2));
+      return;
+    }
+
+    pact.s = state;
+    pact.v = value;
+    const observer = pact.o;
+
+    if (observer) {
+      observer(pact);
+    }
+  }
+}
+
+const _Pact = /*#__PURE__*/function () {
+  function _Pact() {}
+
+  _Pact.prototype.then = function (onFulfilled, onRejected) {
+    const result = new _Pact();
+    const state = this.s;
+
+    if (state) {
+      const callback = state & 1 ? onFulfilled : onRejected;
+
+      if (callback) {
+        try {
+          _settle(result, 1, callback(this.v));
+        } catch (e) {
+          _settle(result, 2, e);
+        }
+
+        return result;
+      } else {
+        return this;
+      }
+    }
+
+    this.o = function (_this) {
+      try {
+        const value = _this.v;
+
+        if (_this.s & 1) {
+          _settle(result, 1, onFulfilled ? onFulfilled(value) : value);
+        } else if (onRejected) {
+          _settle(result, 1, onRejected(value));
+        } else {
+          _settle(result, 2, value);
+        }
+      } catch (e) {
+        _settle(result, 2, e);
+      }
+    };
+
+    return result;
+  };
+
+  return _Pact;
+}();
+
+function _isSettledPact(thenable) {
+  return thenable instanceof _Pact && thenable.s & 1;
+}
+
+function _for(test, update, body) {
+  var stage;
+
+  for (;;) {
+    var shouldContinue = test();
+
+    if (_isSettledPact(shouldContinue)) {
+      shouldContinue = shouldContinue.v;
+    }
+
+    if (!shouldContinue) {
+      return result;
+    }
+
+    if (shouldContinue.then) {
+      stage = 0;
+      break;
+    }
+
+    var result = body();
+
+    if (result && result.then) {
+      if (_isSettledPact(result)) {
+        result = result.s;
+      } else {
+        stage = 1;
+        break;
+      }
+    }
+
+    if (update) {
+      var updateValue = update();
+
+      if (updateValue && updateValue.then && !_isSettledPact(updateValue)) {
+        stage = 2;
+        break;
+      }
+    }
+  }
+
+  var pact = new _Pact();
+
+  var reject = _settle.bind(null, pact, 2);
+
+  (stage === 0 ? shouldContinue.then(_resumeAfterTest) : stage === 1 ? result.then(_resumeAfterBody) : updateValue.then(_resumeAfterUpdate)).then(void 0, reject);
+  return pact;
+
+  function _resumeAfterBody(value) {
+    result = value;
+
+    do {
+      if (update) {
+        updateValue = update();
+
+        if (updateValue && updateValue.then && !_isSettledPact(updateValue)) {
+          updateValue.then(_resumeAfterUpdate).then(void 0, reject);
+          return;
+        }
+      }
+
+      shouldContinue = test();
+
+      if (!shouldContinue || _isSettledPact(shouldContinue) && !shouldContinue.v) {
+        _settle(pact, 1, result);
+
+        return;
+      }
+
+      if (shouldContinue.then) {
+        shouldContinue.then(_resumeAfterTest).then(void 0, reject);
+        return;
+      }
+
+      result = body();
+
+      if (_isSettledPact(result)) {
+        result = result.v;
+      }
+    } while (!result || !result.then);
+
+    result.then(_resumeAfterBody).then(void 0, reject);
+  }
+
+  function _resumeAfterTest(shouldContinue) {
+    if (shouldContinue) {
+      result = body();
+
+      if (result && result.then) {
+        result.then(_resumeAfterBody).then(void 0, reject);
+      } else {
+        _resumeAfterBody(result);
+      }
+    } else {
+      _settle(pact, 1, result);
+    }
+  }
+
+  function _resumeAfterUpdate() {
+    if (shouldContinue = test()) {
+      if (shouldContinue.then) {
+        shouldContinue.then(_resumeAfterTest).then(void 0, reject);
+      } else {
+        _resumeAfterTest(shouldContinue);
+      }
+    } else {
+      _settle(pact, 1, result);
+    }
+  }
+}
+
+function _catch(body, recover) {
+  try {
+    var result = body();
+  } catch (e) {
+    return recover(e);
+  }
+
+  if (result && result.then) {
+    return result.then(void 0, recover);
+  }
+
+  return result;
+}
+
+function getResolver(options) {
+  return new EthrDidResolver(options).build();
+}
+class EthrDidResolver {
+  constructor(options) {
+    this.contracts = void 0;
+    this.contracts = configureResolverWithNetworks(options);
+  }
+  /**
+   * returns the current owner of a DID (represented by an address or public key)
+   *
+   * @param address
+   */
+
+
+  getOwner(address, networkId, blockTag) {
+    try {
+      const _this = this;
+
+      //TODO: check if address or public key
+      return Promise.resolve(new EthrDidController(address, _this.contracts[networkId]).getOwner(address, blockTag));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+  /**
+   * returns the previous change
+   *
+   * @param address
+   */
+
+
+  previousChange(address, networkId, blockTag) {
+    try {
+      const _this2 = this;
+
+      return Promise.resolve(_this2.contracts[networkId].functions.changed(address, {
+        blockTag
+      })).then(function (result) {
+        // console.log(`last change result: '${BigNumber.from(result['0'])}'`)
+        return bignumber.BigNumber.from(result['0']);
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  getBlockMetadata(blockHeight, networkId) {
+    try {
+      const _this3 = this;
+
+      return Promise.resolve(_this3.contracts[networkId].provider.getBlock(blockHeight)).then(function (block) {
+        return {
+          height: block.number.toString(),
+          isoDate: new Date(block.timestamp * 1000).toISOString().replace('.000', '')
+        };
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  changeLog(identity, networkId, blockTag = 'latest') {
+    try {
+      const _this4 = this;
+
+      function _temp3(_provider$getNetwork) {
+        const chainId = hexChainId ? _provider$getNetwork : _provider$getNetwork.chainId;
+        const history = [];
+        const {
+          address,
+          publicKey
+        } = interpretIdentifier(identity);
+        const controllerKey = publicKey;
+        return Promise.resolve(_this4.previousChange(address, networkId, blockTag)).then(function (previousChange) {
+          function _temp2() {
+            return {
+              address,
+              history,
+              controllerKey,
+              chainId
+            };
+          }
+
+          const _temp = _for(function () {
+            return !!previousChange;
+          }, void 0, function () {
+            const blockNumber = previousChange;
+            return Promise.resolve(provider.getLogs({
+              address: contract.address,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              topics: [null, `0x000000000000000000000000${address.slice(2)}`],
+              fromBlock: previousChange.toHexString(),
+              toBlock: previousChange.toHexString()
+            })).then(function (logs) {
+              const events = logDecoder(contract, logs);
+              events.reverse();
+              previousChange = null;
+
+              for (const event of events) {
+                history.unshift(event);
+
+                if (event.previousChange.lt(blockNumber)) {
+                  previousChange = event.previousChange;
+                }
+              }
+            });
+          });
+
+          return _temp && _temp.then ? _temp.then(_temp2) : _temp2(_temp);
+        });
+      }
+
+      const contract = _this4.contracts[networkId];
+      const provider = contract.provider;
+      const hexChainId = networkId.startsWith('0x') ? networkId : undefined; //TODO: this can be used to check if the configuration is ok
+
+      return Promise.resolve(hexChainId ? _temp3(bignumber.BigNumber.from(hexChainId).toNumber()) : Promise.resolve(provider.getNetwork()).then(_temp3));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  wrapDidDocument(did, address, controllerKey, history, chainId, blockHeight, now) {
+    var _didDocument$verifica;
+
+    const baseDIDDocument = {
+      '@context': ['https://www.w3.org/ns/did/v1', 'https://w3id.org/security/suites/secp256k1recovery-2020/v2'],
+      id: did,
+      verificationMethod: [],
+      authentication: [],
+      assertionMethod: []
+    };
+    let controller = address;
+    const authentication = [`${did}#controller`];
+    const keyAgreement = [];
+    let versionId = 0;
+    let nextVersionId = Number.POSITIVE_INFINITY;
+    let deactivated = false;
+    let delegateCount = 0;
+    let serviceCount = 0;
+    let endpoint = '';
+    const auth = {};
+    const keyAgreementRefs = {};
+    const pks = {};
+    const services = {};
+
+    for (const event of history) {
+      if (blockHeight !== -1 && event.blockNumber > blockHeight) {
+        if (nextVersionId > event.blockNumber) {
+          nextVersionId = event.blockNumber;
+        }
+
+        continue;
+      } else {
+        if (versionId < event.blockNumber) {
+          versionId = event.blockNumber;
+        }
+      }
+
+      const validTo = event.validTo || bignumber.BigNumber.from(0);
+      const eventIndex = `${event._eventName}-${event.delegateType || event.name}-${event.delegate || event.value}`;
+
+      if (validTo && validTo.gte(now)) {
+        if (event._eventName === eventNames.DIDDelegateChanged) {
+          const currentEvent = event;
+          delegateCount++;
+          const delegateType = currentEvent.delegateType; //conversion from bytes32 is done in logParser
+
+          switch (delegateType) {
+            case 'sigAuth':
+              auth[eventIndex] = `${did}#delegate-${delegateCount}`;
+            // eslint-disable-line no-fallthrough
+
+            case 'veriKey':
+              pks[eventIndex] = {
+                id: `${did}#delegate-${delegateCount}`,
+                type: exports.verificationMethodTypes.EcdsaSecp256k1RecoveryMethod2020,
+                controller: did,
+                blockchainAccountId: `eip155:${chainId}:${currentEvent.delegate}`
+              };
+              break;
+          }
+        } else if (event._eventName === eventNames.DIDAttributeChanged) {
+          const currentEvent = event;
+          const name = currentEvent.name; //conversion from bytes32 is done in logParser
+
+          const match = name.match(/^did\/(pub|svc)\/(\w+)(\/(\w+))?(\/(\w+))?$/);
+
+          if (match) {
+            const section = match[1];
+            const algorithm = match[2];
+            const type = legacyAttrTypes[match[4]] || match[4];
+            const encoding = match[6];
+
+            switch (section) {
+              case 'pub':
+                {
+                  delegateCount++;
+                  const pk = {
+                    id: `${did}#delegate-${delegateCount}`,
+                    type: `${algorithm}${type}`,
+                    controller: did
+                  };
+                  pk.type = legacyAlgoMap[pk.type] || algorithm;
+
+                  switch (encoding) {
+                    case null:
+                    case undefined:
+                    case 'hex':
+                      pk.publicKeyHex = strip0x(currentEvent.value);
+                      break;
+
+                    case 'base64':
+                      pk.publicKeyBase64 = Buffer.from(currentEvent.value.slice(2), 'hex').toString('base64');
+                      break;
+
+                    case 'base58':
+                      pk.publicKeyBase58 = basex.Base58.encode(Buffer.from(currentEvent.value.slice(2), 'hex'));
+                      break;
+
+                    case 'pem':
+                      pk.publicKeyPem = Buffer.from(currentEvent.value.slice(2), 'hex').toString();
+                      break;
+
+                    default:
+                      pk.value = strip0x(currentEvent.value);
+                  }
+
+                  pks[eventIndex] = pk;
+
+                  if (match[4] === 'sigAuth') {
+                    auth[eventIndex] = pk.id;
+                  } else if (match[4] === 'enc') {
+                    keyAgreementRefs[eventIndex] = pk.id;
+                  }
+
+                  break;
+                }
+
+              case 'svc':
+                serviceCount++;
+
+                try {
+                  endpoint = JSON.parse(Buffer.from(currentEvent.value.slice(2), 'hex').toString());
+                } catch {
+                  endpoint = Buffer.from(currentEvent.value.slice(2), 'hex').toString();
+                }
+
+                services[eventIndex] = {
+                  id: `${did}#service-${serviceCount}`,
+                  type: algorithm,
+                  serviceEndpoint: endpoint
+                };
+                break;
+            }
+          }
+        }
+      } else if (event._eventName === eventNames.DIDOwnerChanged) {
+        const currentEvent = event;
+        controller = currentEvent.owner;
+
+        if (currentEvent.owner === nullAddress) {
+          deactivated = true;
+          break;
+        }
+      } else {
+        if (event._eventName === eventNames.DIDDelegateChanged || event._eventName === eventNames.DIDAttributeChanged && event.name.match(/^did\/pub\//)) {
+          delegateCount++;
+        } else if (event._eventName === eventNames.DIDAttributeChanged && event.name.match(/^did\/svc\//)) {
+          serviceCount++;
+        }
+
+        delete auth[eventIndex];
+        delete pks[eventIndex];
+        delete services[eventIndex];
+      }
+    }
+
+    const publicKeys = [{
+      id: `${did}#controller`,
+      type: exports.verificationMethodTypes.EcdsaSecp256k1RecoveryMethod2020,
+      controller: did,
+      blockchainAccountId: `eip155:${chainId}:${controller}`
+    }];
+
+    if (controllerKey && controller == address) {
+      publicKeys.push({
+        id: `${did}#controllerKey`,
+        type: exports.verificationMethodTypes.EcdsaSecp256k1VerificationKey2019,
+        controller: did,
+        publicKeyHex: strip0x(controllerKey)
+      });
+      authentication.push(`${did}#controllerKey`);
+    }
+
+    const didDocument = { ...baseDIDDocument,
+      verificationMethod: publicKeys.concat(Object.values(pks)),
+      authentication: authentication.concat(Object.values(auth))
+    };
+
+    if (Object.values(services).length > 0) {
+      didDocument.service = Object.values(services);
+    }
+
+    if (Object.values(keyAgreementRefs).length > 0) {
+      didDocument.keyAgreement = keyAgreement.concat(Object.values(keyAgreementRefs));
+    }
+
+    didDocument.assertionMethod = [...(((_didDocument$verifica = didDocument.verificationMethod) == null ? void 0 : _didDocument$verifica.map(pk => pk.id)) || [])];
+    return deactivated ? {
+      didDocument: { ...baseDIDDocument,
+        '@context': 'https://www.w3.org/ns/did/v1'
+      },
+      deactivated,
+      versionId,
+      nextVersionId
+    } : {
+      didDocument,
+      deactivated,
+      versionId,
+      nextVersionId
+    };
+  }
+
+  resolve(did, parsed, // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _unused, options) {
+    try {
+      const _this5 = this;
+
+      function _temp9() {
+        return Promise.resolve(_this5.changeLog(id, networkId, 'latest')).then(function ({
+          address,
+          history,
+          controllerKey,
+          chainId
+        }) {
+          return _catch(function () {
+            function _temp7() {
+              function _temp5() {
+                return {
+                  didDocumentMetadata: { ...status,
+                    ...versionMeta,
+                    ...versionMetaNext
+                  },
+                  didResolutionMetadata: {
+                    contentType: 'application/did+ld+json'
+                  },
+                  didDocument
+                }; // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              }
+
+              const _temp4 = function () {
+                if (nextVersionId !== Number.POSITIVE_INFINITY) {
+                  return Promise.resolve(_this5.getBlockMetadata(nextVersionId, networkId)).then(function (block) {
+                    versionMetaNext = {
+                      nextVersionId: block.height,
+                      nextUpdate: block.isoDate
+                    };
+                  });
+                }
+              }();
+
+              return _temp4 && _temp4.then ? _temp4.then(_temp5) : _temp5(_temp4);
+            }
+
+            const {
+              didDocument,
+              deactivated,
+              versionId,
+              nextVersionId
+            } = _this5.wrapDidDocument(did, address, controllerKey, history, chainId, blockTag, now);
+
+            const status = deactivated ? {
+              deactivated: true
+            } : {};
+            let versionMeta = {};
+            let versionMetaNext = {};
+
+            const _temp6 = function () {
+              if (versionId !== 0) {
+                return Promise.resolve(_this5.getBlockMetadata(versionId, networkId)).then(function (block) {
+                  versionMeta = {
+                    versionId: block.height,
+                    updated: block.isoDate
+                  };
+                });
+              }
+            }();
+
+            return _temp6 && _temp6.then ? _temp6.then(_temp7) : _temp7(_temp6);
+          }, function (e) {
+            return {
+              didResolutionMetadata: {
+                error: exports.Errors.notFound,
+                message: e.toString() // This is not in spec, nut may be helpful
+
+              },
+              didDocumentMetadata: {},
+              didDocument: null
+            };
+          });
+        });
+      }
+
+      const fullId = parsed.id.match(identifierMatcher);
+
+      if (!fullId) {
+        return Promise.resolve({
+          didResolutionMetadata: {
+            error: exports.Errors.invalidDid,
+            message: `Not a valid did:ethr: ${parsed.id}`
+          },
+          didDocumentMetadata: {},
+          didDocument: null
+        });
+      }
+
+      const id = fullId[2];
+      const networkId = !fullId[1] ? 'mainnet' : fullId[1].slice(0, -1);
+      let blockTag = options.blockTag || 'latest';
+
+      if (typeof parsed.query === 'string') {
+        const qParams = new URLSearchParams(parsed.query);
+        blockTag = qParams.get('versionId') ?? blockTag;
+
+        try {
+          blockTag = Number.parseInt(blockTag);
+        } catch (e) {
+          blockTag = 'latest'; // invalid versionId parameters are ignored
+        }
+      }
+
+      if (!_this5.contracts[networkId]) {
+        return Promise.resolve({
+          didResolutionMetadata: {
+            error: exports.Errors.unknownNetwork,
+            message: `The DID resolver does not have a configuration for network: ${networkId}`
+          },
+          didDocumentMetadata: {},
+          didDocument: null
+        });
+      }
+
+      let now = bignumber.BigNumber.from(Math.floor(new Date().getTime() / 1000));
+
+      const _temp8 = function () {
+        if (typeof blockTag === 'number') {
+          return Promise.resolve(_this5.getBlockMetadata(blockTag, networkId)).then(function (block) {
+            now = bignumber.BigNumber.from(Date.parse(block.isoDate) / 1000);
+          });
+        }
+      }();
+
+      return Promise.resolve(_temp8 && _temp8.then ? _temp8.then(_temp9) : _temp9(_temp8));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  build() {
+    return {
+      ethr: this.resolve.bind(this)
+    };
+  }
+
+}
+
+exports.EthereumDIDRegistry = EthereumDIDRegistry;
+exports.EthrDidController = EthrDidController;
+exports.REGISTRY = DEFAULT_REGISTRY_ADDRESS;
+exports.attrTypes = legacyAttrTypes;
+exports.bytes32toString = bytes32toString;
+exports.delegateTypes = legacyAlgoMap;
+exports.deployments = deployments;
+exports.getResolver = getResolver;
+exports.identifierMatcher = identifierMatcher;
+exports.interpretIdentifier = interpretIdentifier;
+exports.stringToBytes32 = stringToBytes32;
+
+
+}).call(this)}).call(this,require("buffer").Buffer)
+},{"@ethersproject/address":24,"@ethersproject/basex":27,"@ethersproject/bignumber":31,"@ethersproject/bytes":33,"@ethersproject/contracts":40,"@ethersproject/keccak256":58,"@ethersproject/providers":77,"@ethersproject/signing-key":98,"@ethersproject/transactions":107,"buffer":238}],175:[function(require,module,exports){
 var didJwt = require('did-jwt');
 var transactions = require('@ethersproject/transactions');
 var signingKey = require('@ethersproject/signing-key');
@@ -38393,7 +41072,7 @@ function attributeToHex(key, value) {
 exports.EthrDID = EthrDID;
 
 
-},{"@ethersproject/base64":26,"@ethersproject/basex":27,"@ethersproject/bytes":33,"@ethersproject/signing-key":98,"@ethersproject/strings":104,"@ethersproject/transactions":107,"@ethersproject/wallet":111,"did-jwt":149,"ethr-did-resolver":179}],174:[function(require,module,exports){
+},{"@ethersproject/base64":26,"@ethersproject/basex":27,"@ethersproject/bytes":33,"@ethersproject/signing-key":98,"@ethersproject/strings":104,"@ethersproject/transactions":107,"@ethersproject/wallet":111,"did-jwt":149,"ethr-did-resolver":181}],176:[function(require,module,exports){
 module.exports={
     "_format": "hh-sol-artifact-1",
     "contractName": "EthereumDIDRegistry",
@@ -38954,7 +41633,7 @@ module.exports={
     "deployedLinkReferences": {}
 }
 
-},{}],175:[function(require,module,exports){
+},{}],177:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deployments = void 0;
@@ -38990,7 +41669,7 @@ exports.deployments = [
     { chainId: 1313161554, registry: '0x63eD58B671EeD12Bc1652845ba5b2CDfBff198e0', name: 'aurora', legacyNonce: true },
 ];
 
-},{}],176:[function(require,module,exports){
+},{}],178:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -39098,7 +41777,7 @@ function configureResolverWithNetworks(conf = {}) {
 }
 exports.configureResolverWithNetworks = configureResolverWithNetworks;
 
-},{"./config/EthereumDIDRegistry.json":174,"./config/deployments":175,"./helpers":178,"@ethersproject/bignumber":31,"@ethersproject/contracts":40,"@ethersproject/providers":77}],177:[function(require,module,exports){
+},{"./config/EthereumDIDRegistry.json":176,"./config/deployments":177,"./helpers":180,"@ethersproject/bignumber":31,"@ethersproject/contracts":40,"@ethersproject/providers":77}],179:[function(require,module,exports){
 (function (Buffer){(function (){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -39374,7 +42053,7 @@ class EthrDidController {
 exports.EthrDidController = EthrDidController;
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./configuration":176,"./helpers":178,"@ethersproject/bytes":33,"@ethersproject/keccak256":58,"@ethersproject/strings":104,"buffer":236}],178:[function(require,module,exports){
+},{"./configuration":178,"./helpers":180,"@ethersproject/bytes":33,"@ethersproject/keccak256":58,"@ethersproject/strings":104,"buffer":238}],180:[function(require,module,exports){
 (function (Buffer){(function (){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -39480,7 +42159,7 @@ var Errors;
 })(Errors = exports.Errors || (exports.Errors = {}));
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"@ethersproject/address":24,"@ethersproject/bytes":33,"@ethersproject/keccak256":58,"@ethersproject/signing-key":98,"@ethersproject/transactions":107,"buffer":236}],179:[function(require,module,exports){
+},{"@ethersproject/address":24,"@ethersproject/bytes":33,"@ethersproject/keccak256":58,"@ethersproject/signing-key":98,"@ethersproject/transactions":107,"buffer":238}],181:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -39506,7 +42185,7 @@ Object.defineProperty(exports, "EthereumDIDRegistry", { enumerable: true, get: f
 var deployments_1 = require("./config/deployments");
 Object.defineProperty(exports, "deployments", { enumerable: true, get: function () { return deployments_1.deployments; } });
 
-},{"./config/EthereumDIDRegistry.json":174,"./config/deployments":175,"./controller":177,"./helpers":178,"./resolver":181}],180:[function(require,module,exports){
+},{"./config/EthereumDIDRegistry.json":176,"./config/deployments":177,"./controller":179,"./helpers":180,"./resolver":183}],182:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.logDecoder = void 0;
@@ -39542,7 +42221,7 @@ function logDecoder(contract, logs) {
 }
 exports.logDecoder = logDecoder;
 
-},{"./helpers":178,"@ethersproject/bignumber":31}],181:[function(require,module,exports){
+},{"./helpers":180,"@ethersproject/bignumber":31}],183:[function(require,module,exports){
 (function (Buffer){(function (){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -39889,7 +42568,7 @@ class EthrDidResolver {
 exports.EthrDidResolver = EthrDidResolver;
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./configuration":176,"./controller":177,"./helpers":178,"./logParser":180,"@ethersproject/basex":27,"@ethersproject/bignumber":31,"buffer":236}],182:[function(require,module,exports){
+},{"./configuration":178,"./controller":179,"./helpers":180,"./logParser":182,"@ethersproject/basex":27,"@ethersproject/bignumber":31,"buffer":238}],184:[function(require,module,exports){
 var hash = exports;
 
 hash.utils = require('./hash/utils');
@@ -39906,7 +42585,7 @@ hash.sha384 = hash.sha.sha384;
 hash.sha512 = hash.sha.sha512;
 hash.ripemd160 = hash.ripemd.ripemd160;
 
-},{"./hash/common":183,"./hash/hmac":184,"./hash/ripemd":185,"./hash/sha":186,"./hash/utils":193}],183:[function(require,module,exports){
+},{"./hash/common":185,"./hash/hmac":186,"./hash/ripemd":187,"./hash/sha":188,"./hash/utils":195}],185:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -40000,7 +42679,7 @@ BlockHash.prototype._pad = function pad() {
   return res;
 };
 
-},{"./utils":193,"minimalistic-assert":197}],184:[function(require,module,exports){
+},{"./utils":195,"minimalistic-assert":199}],186:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -40049,7 +42728,7 @@ Hmac.prototype.digest = function digest(enc) {
   return this.outer.digest(enc);
 };
 
-},{"./utils":193,"minimalistic-assert":197}],185:[function(require,module,exports){
+},{"./utils":195,"minimalistic-assert":199}],187:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -40197,7 +42876,7 @@ var sh = [
   8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
 ];
 
-},{"./common":183,"./utils":193}],186:[function(require,module,exports){
+},{"./common":185,"./utils":195}],188:[function(require,module,exports){
 'use strict';
 
 exports.sha1 = require('./sha/1');
@@ -40206,7 +42885,7 @@ exports.sha256 = require('./sha/256');
 exports.sha384 = require('./sha/384');
 exports.sha512 = require('./sha/512');
 
-},{"./sha/1":187,"./sha/224":188,"./sha/256":189,"./sha/384":190,"./sha/512":191}],187:[function(require,module,exports){
+},{"./sha/1":189,"./sha/224":190,"./sha/256":191,"./sha/384":192,"./sha/512":193}],189:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -40282,7 +42961,7 @@ SHA1.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":183,"../utils":193,"./common":192}],188:[function(require,module,exports){
+},{"../common":185,"../utils":195,"./common":194}],190:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -40314,7 +42993,7 @@ SHA224.prototype._digest = function digest(enc) {
 };
 
 
-},{"../utils":193,"./256":189}],189:[function(require,module,exports){
+},{"../utils":195,"./256":191}],191:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -40421,7 +43100,7 @@ SHA256.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":183,"../utils":193,"./common":192,"minimalistic-assert":197}],190:[function(require,module,exports){
+},{"../common":185,"../utils":195,"./common":194,"minimalistic-assert":199}],192:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -40458,7 +43137,7 @@ SHA384.prototype._digest = function digest(enc) {
     return utils.split32(this.h.slice(0, 12), 'big');
 };
 
-},{"../utils":193,"./512":191}],191:[function(require,module,exports){
+},{"../utils":195,"./512":193}],193:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -40790,7 +43469,7 @@ function g1_512_lo(xh, xl) {
   return r;
 }
 
-},{"../common":183,"../utils":193,"minimalistic-assert":197}],192:[function(require,module,exports){
+},{"../common":185,"../utils":195,"minimalistic-assert":199}],194:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -40841,7 +43520,7 @@ function g1_256(x) {
 }
 exports.g1_256 = g1_256;
 
-},{"../utils":193}],193:[function(require,module,exports){
+},{"../utils":195}],195:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -41121,7 +43800,7 @@ function shr64_lo(ah, al, num) {
 }
 exports.shr64_lo = shr64_lo;
 
-},{"inherits":195,"minimalistic-assert":197}],194:[function(require,module,exports){
+},{"inherits":197,"minimalistic-assert":199}],196:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -41236,7 +43915,7 @@ HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
   return utils.encode(res, enc);
 };
 
-},{"hash.js":182,"minimalistic-assert":197,"minimalistic-crypto-utils":198}],195:[function(require,module,exports){
+},{"hash.js":184,"minimalistic-assert":199,"minimalistic-crypto-utils":200}],197:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -41261,7 +43940,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],196:[function(require,module,exports){
+},{}],198:[function(require,module,exports){
 (function (process,global){(function (){
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
@@ -41921,7 +44600,7 @@ if (typeof Object.create === 'function') {
 })();
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":238}],197:[function(require,module,exports){
+},{"_process":240}],199:[function(require,module,exports){
 module.exports = assert;
 
 function assert(val, msg) {
@@ -41934,7 +44613,7 @@ assert.equal = function assertEqual(l, r, msg) {
     throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
 };
 
-},{}],198:[function(require,module,exports){
+},{}],200:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -41994,7 +44673,7 @@ utils.encode = function encode(arr, enc) {
     return arr;
 };
 
-},{}],199:[function(require,module,exports){
+},{}],201:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42160,7 +44839,7 @@ exports.from = from;
 exports.or = or;
 exports.rfc4648 = rfc4648;
 
-},{"../../vendor/base-x.js":221,"../bytes.js":211}],200:[function(require,module,exports){
+},{"../../vendor/base-x.js":223,"../bytes.js":213}],202:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42175,7 +44854,7 @@ const base10 = base.baseX({
 
 exports.base10 = base10;
 
-},{"./base.js":199}],201:[function(require,module,exports){
+},{"./base.js":201}],203:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42198,7 +44877,7 @@ const base16upper = base.rfc4648({
 exports.base16 = base16;
 exports.base16upper = base16upper;
 
-},{"./base.js":199}],202:[function(require,module,exports){
+},{"./base.js":201}],204:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42214,7 +44893,7 @@ const base2 = base.rfc4648({
 
 exports.base2 = base2;
 
-},{"./base.js":199}],203:[function(require,module,exports){
+},{"./base.js":201}],205:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42256,7 +44935,7 @@ const base256emoji = base.from({
 
 exports.base256emoji = base256emoji;
 
-},{"./base.js":199}],204:[function(require,module,exports){
+},{"./base.js":201}],206:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42328,7 +45007,7 @@ exports.base32padupper = base32padupper;
 exports.base32upper = base32upper;
 exports.base32z = base32z;
 
-},{"./base.js":199}],205:[function(require,module,exports){
+},{"./base.js":201}],207:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42349,7 +45028,7 @@ const base36upper = base.baseX({
 exports.base36 = base36;
 exports.base36upper = base36upper;
 
-},{"./base.js":199}],206:[function(require,module,exports){
+},{"./base.js":201}],208:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42370,7 +45049,7 @@ const base58flickr = base.baseX({
 exports.base58btc = base58btc;
 exports.base58flickr = base58flickr;
 
-},{"./base.js":199}],207:[function(require,module,exports){
+},{"./base.js":201}],209:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42407,7 +45086,7 @@ exports.base64pad = base64pad;
 exports.base64url = base64url;
 exports.base64urlpad = base64urlpad;
 
-},{"./base.js":199}],208:[function(require,module,exports){
+},{"./base.js":201}],210:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42423,7 +45102,7 @@ const base8 = base.rfc4648({
 
 exports.base8 = base8;
 
-},{"./base.js":199}],209:[function(require,module,exports){
+},{"./base.js":201}],211:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42440,7 +45119,7 @@ const identity = base.from({
 
 exports.identity = identity;
 
-},{"../bytes.js":211,"./base.js":199}],210:[function(require,module,exports){
+},{"../bytes.js":213,"./base.js":201}],212:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42496,7 +45175,7 @@ exports.bases = bases;
 exports.codecs = codecs;
 exports.hashes = hashes;
 
-},{"./bases/base10.js":200,"./bases/base16.js":201,"./bases/base2.js":202,"./bases/base256emoji.js":203,"./bases/base32.js":204,"./bases/base36.js":205,"./bases/base58.js":206,"./bases/base64.js":207,"./bases/base8.js":208,"./bases/identity.js":209,"./bytes.js":211,"./cid.js":212,"./codecs/json.js":213,"./codecs/raw.js":214,"./hashes/digest.js":215,"./hashes/hasher.js":216,"./hashes/identity.js":217,"./hashes/sha2.js":218,"./index.js":219,"./varint.js":220}],211:[function(require,module,exports){
+},{"./bases/base10.js":202,"./bases/base16.js":203,"./bases/base2.js":204,"./bases/base256emoji.js":205,"./bases/base32.js":206,"./bases/base36.js":207,"./bases/base58.js":208,"./bases/base64.js":209,"./bases/base8.js":210,"./bases/identity.js":211,"./bytes.js":213,"./cid.js":214,"./codecs/json.js":215,"./codecs/raw.js":216,"./hashes/digest.js":217,"./hashes/hasher.js":218,"./hashes/identity.js":219,"./hashes/sha2.js":220,"./index.js":221,"./varint.js":222}],213:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42543,7 +45222,7 @@ exports.isBinary = isBinary;
 exports.toHex = toHex;
 exports.toString = toString;
 
-},{}],212:[function(require,module,exports){
+},{}],214:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42860,7 +45539,7 @@ if (cid) {
 
 exports.CID = CID;
 
-},{"./bases/base32.js":204,"./bases/base58.js":206,"./bytes.js":211,"./hashes/digest.js":215,"./varint.js":220}],213:[function(require,module,exports){
+},{"./bases/base32.js":206,"./bases/base58.js":208,"./bytes.js":213,"./hashes/digest.js":217,"./varint.js":222}],215:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42877,7 +45556,7 @@ exports.decode = decode;
 exports.encode = encode;
 exports.name = name;
 
-},{}],214:[function(require,module,exports){
+},{}],216:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42894,7 +45573,7 @@ exports.decode = decode;
 exports.encode = encode;
 exports.name = name;
 
-},{"../bytes.js":211}],215:[function(require,module,exports){
+},{"../bytes.js":213}],217:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42943,7 +45622,7 @@ exports.create = create;
 exports.decode = decode;
 exports.equals = equals;
 
-},{"../bytes.js":211,"../varint.js":220}],216:[function(require,module,exports){
+},{"../bytes.js":213,"../varint.js":222}],218:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42970,7 +45649,7 @@ class Hasher {
 exports.Hasher = Hasher;
 exports.from = from;
 
-},{"./digest.js":215}],217:[function(require,module,exports){
+},{"./digest.js":217}],219:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -42991,7 +45670,7 @@ const identity = {
 
 exports.identity = identity;
 
-},{"../bytes.js":211,"./digest.js":215}],218:[function(require,module,exports){
+},{"../bytes.js":213,"./digest.js":217}],220:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -43013,7 +45692,7 @@ const sha512 = hasher.from({
 exports.sha256 = sha256;
 exports.sha512 = sha512;
 
-},{"./hasher.js":216}],219:[function(require,module,exports){
+},{"./hasher.js":218}],221:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -43032,7 +45711,7 @@ exports.bytes = bytes;
 exports.hasher = hasher;
 exports.digest = digest;
 
-},{"./bytes.js":211,"./cid.js":212,"./hashes/digest.js":215,"./hashes/hasher.js":216,"./varint.js":220}],220:[function(require,module,exports){
+},{"./bytes.js":213,"./cid.js":214,"./hashes/digest.js":217,"./hashes/hasher.js":218,"./varint.js":222}],222:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -43058,7 +45737,7 @@ exports.decode = decode;
 exports.encodeTo = encodeTo;
 exports.encodingLength = encodingLength;
 
-},{"../vendor/varint.js":222}],221:[function(require,module,exports){
+},{"../vendor/varint.js":224}],223:[function(require,module,exports){
 'use strict';
 
 function base(ALPHABET, name) {
@@ -43196,7 +45875,7 @@ var _brrp__multiformats_scope_baseX = src;
 
 module.exports = _brrp__multiformats_scope_baseX;
 
-},{}],222:[function(require,module,exports){
+},{}],224:[function(require,module,exports){
 'use strict';
 
 var encode_1 = encode;
@@ -43255,7 +45934,7 @@ var varint$1 = _brrp_varint;
 
 module.exports = varint$1;
 
-},{}],223:[function(require,module,exports){
+},{}],225:[function(require,module,exports){
 (function (setImmediate){(function (){
 "use strict";
 
@@ -43747,7 +46426,7 @@ module.exports = varint$1;
 })(this);
 
 }).call(this)}).call(this,require("timers").setImmediate)
-},{"timers":239}],224:[function(require,module,exports){
+},{"timers":241}],226:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -43770,7 +46449,7 @@ function allocUnsafe(size = 0) {
 exports.alloc = alloc;
 exports.allocUnsafe = allocUnsafe;
 
-},{"./util/as-uint8array.js":231}],225:[function(require,module,exports){
+},{"./util/as-uint8array.js":233}],227:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -43795,7 +46474,7 @@ function compare(a, b) {
 
 exports.compare = compare;
 
-},{}],226:[function(require,module,exports){
+},{}],228:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -43818,7 +46497,7 @@ function concat(arrays, length) {
 
 exports.concat = concat;
 
-},{"./alloc.js":224,"./util/as-uint8array.js":231}],227:[function(require,module,exports){
+},{"./alloc.js":226,"./util/as-uint8array.js":233}],229:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -43840,7 +46519,7 @@ function equals(a, b) {
 
 exports.equals = equals;
 
-},{}],228:[function(require,module,exports){
+},{}],230:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -43861,7 +46540,7 @@ function fromString(string, encoding = 'utf8') {
 
 exports.fromString = fromString;
 
-},{"./util/as-uint8array.js":231,"./util/bases.js":232}],229:[function(require,module,exports){
+},{"./util/as-uint8array.js":233,"./util/bases.js":234}],231:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -43882,7 +46561,7 @@ exports.fromString = fromString.fromString;
 exports.toString = toString.toString;
 exports.xor = xor.xor;
 
-},{"./compare.js":225,"./concat.js":226,"./equals.js":227,"./from-string.js":228,"./to-string.js":230,"./xor.js":233}],230:[function(require,module,exports){
+},{"./compare.js":227,"./concat.js":228,"./equals.js":229,"./from-string.js":230,"./to-string.js":232,"./xor.js":235}],232:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -43902,7 +46581,7 @@ function toString(array, encoding = 'utf8') {
 
 exports.toString = toString;
 
-},{"./util/bases.js":232}],231:[function(require,module,exports){
+},{"./util/bases.js":234}],233:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -43916,7 +46595,7 @@ function asUint8Array(buf) {
 
 exports.asUint8Array = asUint8Array;
 
-},{}],232:[function(require,module,exports){
+},{}],234:[function(require,module,exports){
 'use strict';
 
 var basics = require('multiformats/basics');
@@ -43967,7 +46646,7 @@ const BASES = {
 
 module.exports = BASES;
 
-},{"../alloc.js":224,"multiformats/basics":210}],233:[function(require,module,exports){
+},{"../alloc.js":226,"multiformats/basics":212}],235:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -43988,7 +46667,7 @@ function xor(a, b) {
 
 exports.xor = xor;
 
-},{"./alloc.js":224,"./util/as-uint8array.js":231}],234:[function(require,module,exports){
+},{"./alloc.js":226,"./util/as-uint8array.js":233}],236:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -44140,9 +46819,9 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],235:[function(require,module,exports){
+},{}],237:[function(require,module,exports){
 
-},{}],236:[function(require,module,exports){
+},{}],238:[function(require,module,exports){
 (function (Buffer){(function (){
 /*!
  * The buffer module from node.js, for the browser.
@@ -45923,7 +48602,7 @@ function numberIsNaN (obj) {
 }
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"base64-js":234,"buffer":236,"ieee754":237}],237:[function(require,module,exports){
+},{"base64-js":236,"buffer":238,"ieee754":239}],239:[function(require,module,exports){
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
@@ -46010,7 +48689,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],238:[function(require,module,exports){
+},{}],240:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -46196,7 +48875,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],239:[function(require,module,exports){
+},{}],241:[function(require,module,exports){
 (function (setImmediate,clearImmediate){(function (){
 var nextTick = require('process/browser.js').nextTick;
 var apply = Function.prototype.apply;
@@ -46275,4 +48954,4 @@ exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate :
   delete immediateIds[id];
 };
 }).call(this)}).call(this,require("timers").setImmediate,require("timers").clearImmediate)
-},{"process/browser.js":238,"timers":239}]},{},[1,2]);
+},{"process/browser.js":240,"timers":241}]},{},[1,2]);

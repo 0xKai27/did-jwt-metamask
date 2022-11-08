@@ -54,7 +54,7 @@ async function addJWTAttribute() {
     subjectDid = new EthrDID({identifier: subjectAddress, provider: ethersProvider, chainNameOrId, txSigner: ethersSigner, alg: 'ES256K'});
 
     // Use the delegate to sign the message
-    const setAttributeReceipt = await subjectDid.setAttribute(`did/pub/Secp256k1/veriKey`, signedJWT);
+    const setAttributeReceipt: string = await subjectDid.setAttribute(`did/pub/Secp256k1/veriKey`, signedJWT, undefined, undefined, {gasLimit: 500000});
 
     txReceiptSpan.innerHTML = setAttributeReceipt;
 };

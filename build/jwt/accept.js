@@ -54,7 +54,7 @@ function addJWTAttribute() {
         // Create the subject DID object for signing
         subjectDid = new ethr_did_1.EthrDID({ identifier: subjectAddress, provider: signer_1.provider, chainNameOrId, txSigner: signer_1.signer, alg: 'ES256K' });
         // Use the delegate to sign the message
-        const setAttributeReceipt = yield subjectDid.setAttribute(`did/pub/Secp256k1/veriKey`, signedJWT);
+        const setAttributeReceipt = yield subjectDid.setAttribute(`did/pub/Secp256k1/veriKey`, signedJWT, undefined, undefined, { gasLimit: 500000 });
         txReceiptSpan.innerHTML = setAttributeReceipt;
     });
 }

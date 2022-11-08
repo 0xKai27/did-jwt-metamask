@@ -1,6 +1,7 @@
 import * as didJWT from 'did-jwt';
-import { ethers } from 'ethers';
 import { EthrDID } from 'ethr-did';
+import { Resolver } from 'did-resolver';
+import { getResolver } from 'ethr-did-resolver';
 
 import { 
     provider as ethersProvider,
@@ -16,6 +17,16 @@ type unsignedJWT = {
         alg: string
     }
 }
+
+const registryAddress: string = '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b';
+const providerConfig = {
+    networks: [
+      { name: "0x5", provider: ethersProvider },
+    ],
+    registry: registryAddress // optional as ethr-did-resolver sets this up as default
+  }
+const ethrDidResolver = getResolver(providerConfig);
+const didResolver: Resolver = new Resolver(ethrDidResolver);
 
 // Initialise the page objects to interact with
 // UI Section: "Configure subject and audience DIDs"
@@ -142,6 +153,11 @@ async function signJWT(JWTMessage: unsignedJWT) {
     delegateSignerSpan.innerHTML = kp.address;
     delegateSignerIdentifierSpan.innerHTML = kp.identifier;
     signedJWTSpan.innerHTML = signedJWT;
+
+    // Log the Issuer DID Doc to view the linked delegate signer
+    console.log(`Issuer DID Doc:`);
+    const issuerDoc = await didResolver.resolve(`did:ethr:0x5:${issuerAddress}`);
+    console.debug(issuerDoc);
 
     // Save the JWT 
     await fetch('/api/saveJWT', {

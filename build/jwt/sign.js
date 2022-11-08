@@ -10,7 +10,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const ethr_did_1 = require("ethr-did");
+const did_resolver_1 = require("did-resolver");
+const ethr_did_resolver_1 = require("ethr-did-resolver");
 const signer_1 = require("../ethers/signer");
+const registryAddress = '0xdca7ef03e98e0dc2b855be647c39abe984fcf21b';
+const providerConfig = {
+    networks: [
+        { name: "0x5", provider: signer_1.provider },
+    ],
+    registry: registryAddress // optional as ethr-did-resolver sets this up as default
+};
+const ethrDidResolver = (0, ethr_did_resolver_1.getResolver)(providerConfig);
+const didResolver = new did_resolver_1.Resolver(ethrDidResolver);
 // Initialise the page objects to interact with
 // UI Section: "Configure subject and audience DIDs"
 const configureAddessesForm = document.querySelector('#configureAddresses');
@@ -115,6 +126,10 @@ function signJWT(JWTMessage) {
         delegateSignerSpan.innerHTML = kp.address;
         delegateSignerIdentifierSpan.innerHTML = kp.identifier;
         signedJWTSpan.innerHTML = signedJWT;
+        // Log the Issuer DID Doc to view the linked delegate signer
+        console.log(`Issuer DID Doc:`);
+        const issuerDoc = yield didResolver.resolve(`did:ethr:0x5:${issuerAddress}`);
+        console.debug(issuerDoc);
         // Save the JWT 
         yield fetch('/api/saveJWT', {
             method: 'POST',
