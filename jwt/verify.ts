@@ -55,6 +55,8 @@ configureAudienceForm.addEventListener('submit', async (e) => {
 
 // Allow user to trigger the validation
 validateJWTButton.addEventListener('click', async () => {
+    console.log(`Validating...`)
+
     await verifyIssuerDelegateSigner();
 });
 
