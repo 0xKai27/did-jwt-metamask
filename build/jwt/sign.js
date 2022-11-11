@@ -33,12 +33,14 @@ const audienceDIDSpan = document.querySelector('#audienceDID');
 const prepareJWTForm = document.querySelector('#prepareJWT');
 const privateClaimHTML = document.querySelector('#privateClaim');
 const issuerDIDSpan = document.querySelector('#issuerDID');
+// UI Section: "Create Signing Delegate"
+const createDelegateButton = document.querySelector('#createDelegate');
+const delegateSignerSpan = document.querySelector('#delegateSigner');
+const delegateSignerIdentifierSpan = document.querySelector('#delegateSignerIdentifier');
 // UI Section: "Sign JWT Token"
 const signJWTButton = document.querySelector('#signJWT');
 const connectedMetamaskAccountSpan = document.querySelector('#connectedMetamaskAccount');
 const signedJWTSpan = document.querySelector('#signedJWT');
-const delegateSignerSpan = document.querySelector('#delegateSigner');
-const delegateSignerIdentifierSpan = document.querySelector('#delegateSignerIdentifier');
 let chainNameOrId; // The connected EVM chain
 let privateClaim;
 let JWTMessage; // Unsigned JWT message
@@ -62,6 +64,9 @@ prepareJWTForm.addEventListener('submit', (e) => __awaiter(void 0, void 0, void 
     // Extract the form value
     privateClaim = (privateClaimHTML.value === '') ? 'DEFAULT_PRIVATE_CLAIM' : privateClaimHTML.value;
     yield prepareJWT();
+}));
+createDelegateButton.addEventListener('click', () => __awaiter(void 0, void 0, void 0, function* () {
+    yield createDelegate();
 }));
 // Sign the JWT and display to user
 signJWTButton.addEventListener('click', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -111,24 +116,29 @@ function prepareJWT() {
         console.debug(buildJWT);
     });
 }
-// Sign the JWT 
-function signJWT(JWTMessage) {
+// Create the signing delegate
+function createDelegate() {
     return __awaiter(this, void 0, void 0, function* () {
         // Recreate issuer DID object with signer
         issuerDid = new ethr_did_1.EthrDID({ identifier: issuerAddress, provider: signer_1.provider, chainNameOrId, txSigner: signer_1.signer, alg: 'ES256K' });
         // Create a signing delegate as web3 providers are not able to sign directly
         const { kp, txHash } = yield issuerDid.createSigningDelegate();
-        const issuerDelegateKp = new ethr_did_1.EthrDID(Object.assign(Object.assign({}, kp), { chainNameOrId }));
-        // Use the delegate to sign the message
-        signedJWT = yield issuerDelegateKp.signJWT(JWTMessage.payload);
         // Update the UI to display the signed JWT
-        connectedMetamaskAccountSpan.innerHTML = yield signer_1.signer.getAddress();
         delegateSignerSpan.innerHTML = kp.address;
         delegateSignerIdentifierSpan.innerHTML = kp.identifier;
+    });
+}
+// Sign the JWT 
+function signJWT(JWTMessage) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // Use the delegate to sign the message
+        signedJWT = yield issuerDid.signJWT(JWTMessage.payload);
+        // Update the UI to display the signed JWT
+        connectedMetamaskAccountSpan.innerHTML = yield signer_1.signer.getAddress();
         signedJWTSpan.innerHTML = signedJWT;
         // Log the Issuer DID Doc to view the linked delegate signer
         console.log(`Issuer DID Doc:`);
-        const issuerDoc = yield didResolver.resolve(`did:ethr:0x5:${issuerAddress}`);
+        const issuerDoc = yield didResolver.resolve(issuerDid.did);
         console.debug(issuerDoc);
         // Save the JWT 
         yield fetch('/api/saveJWT', {

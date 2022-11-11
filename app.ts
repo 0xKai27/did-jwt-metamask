@@ -7,7 +7,6 @@ import logger from 'morgan';
 
 import { issuerRouter } from './routes/issuer';
 import { audienceRouter } from './routes/audience';
-import { subjectRouter } from './routes/subject';
 import { apiRouter } from './routes/api';
 
 declare module 'express-session' {
@@ -40,7 +39,6 @@ app.use(
 
 app.use('/', issuerRouter);
 app.use('/audience', audienceRouter);
-app.use('/subject', subjectRouter);
 app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler

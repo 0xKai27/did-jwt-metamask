@@ -10,9 +10,6 @@
     <a href="/">
       <button class="issuerApp">Issuer App</button>
     </a>
-    <a href="/subject">
-      <button class="subjectApp">Subject App</button>
-    </a>
     <a href="/audience">
       <button class="audienceApp">Audience App</button>
     </a>
@@ -43,22 +40,6 @@
         <button>Confirm audience</button>
       </form>
       <h3>Audience Address: <span id="audienceAddress"></span></h3>
-    <hr>
-      <h2>Validate Subject DID Doc contains the JWT</h2>
-      <ul>
-        <li>Get the Subject DID Doc</li>
-        <li>Scan the DID Doc for Public Hex Key matching JWT</li>
-      </ul>
-      <form id="validateSubjectDidDoc">
-        <p>Subject Address:</p>
-        <input type="text" id="subjectAddressForm"/>
-        <br>
-        <button>Validate Subject DID Doc</button>
-      </form>
-      <h3>DID Doc Public Key Hex: <span id="publicKeyHex"></span></h3>
-      <h3>Public Key Hex to String: <span id="hexString"></span></h3>
-      <h3>Private Claim Extracted from Public Key Hex: <span id="hexPrivateClaim"></span></h3>
-      <h3>Subject DID Doc and JWT match: <span id="subjectValidated"></span></h3>
     <hr>
       <h2>Validate JWT Payload</h2>
         <ul>

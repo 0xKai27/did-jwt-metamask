@@ -15,13 +15,6 @@ const signedJWTSpan = document.querySelector('#signedJWT') as HTMLSpanElement;
 const configureAudienceForm = document.querySelector('#configureAudience') as HTMLFormElement;
 const audienceAddressHTML = document.querySelector('#audienceAddressForm') as HTMLFormElement;
 const audienceAddressSpan = document.querySelector('#audienceAddress') as HTMLSpanElement;
-// UI Section: "Validate Subject DID Doc contains the JWT"
-const validateSubjectDidDocForm = document.querySelector('#validateSubjectDidDoc') as HTMLFormElement;
-const subjectAddressFormHTML = document.querySelector('#subjectAddressForm') as HTMLFormElement;
-const publicKeyHexSpan = document.querySelector('#publicKeyHex') as HTMLSpanElement;
-const hexStringSpan = document.querySelector('#hexString') as HTMLSpanElement;
-const hexPrivateClaimSpan = document.querySelector('#hexPrivateClaim') as HTMLSpanElement;
-const subjectValidatedSpan = document.querySelector('#subjectValidated') as HTMLSpanElement;
 // UI Section: Validate JWT Payload
 const validateJWTButton = document.querySelector('#validateJWT') as HTMLButtonElement;
 const privateClaimSpan = document.querySelector('#privateClaim') as HTMLSpanElement;
@@ -60,14 +53,6 @@ configureAudienceForm.addEventListener('submit', async (e) => {
     
 })
 
-validateSubjectDidDocForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    let subjectAddress = (subjectAddressFormHTML.value === '') ? '0xDBB3d90156fC23c28C709eB68af8403836951AF8' : subjectAddressFormHTML.value;
-
-    await verifySubjectAttribute(subjectAddress);
-})
-
 // Allow user to trigger the validation
 validateJWTButton.addEventListener('click', async () => {
     await verifyIssuerDelegateSigner();
@@ -81,40 +66,6 @@ async function getJWT() {
     });
 
     signedJWTSpan.innerHTML = signedJWT;
-};
-
-async function verifySubjectAttribute(subjectAddress: string) {
-    // Get the Metamask configured chainId
-    let chainNameOrId = (await ethersProvider.getNetwork()).chainId;
-
-    // Configure the subject DID object
-    const subjectDid = new EthrDID({identifier: subjectAddress, provider: ethersProvider, chainNameOrId});
-
-    // Resolve the Subject DID Document
-    const subjectDidDoc = await didResolver.resolve(subjectDid.did);
-
-    // Loop through the verificationMethod to find a matching key
-    for (const method of subjectDidDoc.didDocument!.verificationMethod!) {
-        if (!method.publicKeyHex) {
-            continue;
-        }
-
-        // Convert base64 string to DataHexString
-        let publicKeyUtf8: string = ethers.utils.toUtf8String(`0x${method.publicKeyHex}`)
-
-        if ( publicKeyUtf8 === signedJWT) {
-            // JWT is split into <header>.<payload>.<signature>
-            const payload = publicKeyUtf8.split('.')[1];
-            const payloadJSON = JSON.parse(ethers.utils.toUtf8String(ethers.utils.base64.decode(payload)));
-
-            hexPrivateClaimSpan.innerHTML = JSON.stringify(payloadJSON.privateClaim);
-            publicKeyHexSpan.innerHTML = JSON.stringify(method.publicKeyHex);
-            hexStringSpan.innerHTML = publicKeyUtf8;
-            subjectValidatedSpan.innerHTML = "Found Matching Public Key"
-        }
-
-    }
-
 };
 
 async function verifyIssuerDelegateSigner() {

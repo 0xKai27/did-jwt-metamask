@@ -21,13 +21,6 @@ const signedJWTSpan = document.querySelector('#signedJWT');
 const configureAudienceForm = document.querySelector('#configureAudience');
 const audienceAddressHTML = document.querySelector('#audienceAddressForm');
 const audienceAddressSpan = document.querySelector('#audienceAddress');
-// UI Section: "Validate Subject DID Doc contains the JWT"
-const validateSubjectDidDocForm = document.querySelector('#validateSubjectDidDoc');
-const subjectAddressFormHTML = document.querySelector('#subjectAddressForm');
-const publicKeyHexSpan = document.querySelector('#publicKeyHex');
-const hexStringSpan = document.querySelector('#hexString');
-const hexPrivateClaimSpan = document.querySelector('#hexPrivateClaim');
-const subjectValidatedSpan = document.querySelector('#subjectValidated');
 // UI Section: Validate JWT Payload
 const validateJWTButton = document.querySelector('#validateJWT');
 const privateClaimSpan = document.querySelector('#privateClaim');
@@ -59,11 +52,6 @@ configureAudienceForm.addEventListener('submit', (e) => __awaiter(void 0, void 0
     }
     audienceAddressSpan.innerHTML = audienceAddress;
 }));
-validateSubjectDidDocForm.addEventListener('submit', (e) => __awaiter(void 0, void 0, void 0, function* () {
-    e.preventDefault();
-    let subjectAddress = (subjectAddressFormHTML.value === '') ? '0xDBB3d90156fC23c28C709eB68af8403836951AF8' : subjectAddressFormHTML.value;
-    yield verifySubjectAttribute(subjectAddress);
-}));
 // Allow user to trigger the validation
 validateJWTButton.addEventListener('click', () => __awaiter(void 0, void 0, void 0, function* () {
     yield verifyIssuerDelegateSigner();
@@ -79,36 +67,13 @@ function getJWT() {
     });
 }
 ;
-function verifySubjectAttribute(subjectAddress) {
-    return __awaiter(this, void 0, void 0, function* () {
-        // Get the Metamask configured chainId
-        let chainNameOrId = (yield signer_1.provider.getNetwork()).chainId;
-        const subjectDid = new ethr_did_1.EthrDID({ identifier: subjectAddress, provider: signer_1.provider, chainNameOrId });
-        const subjectDidDoc = yield didResolver.resolve(subjectDid.did);
-        console.debug(subjectDidDoc);
-        for (const method of subjectDidDoc.didDocument.verificationMethod) {
-            if (!method.publicKeyHex) {
-                continue;
-            }
-            let publiKeyUtf8 = ethers_1.ethers.utils.toUtf8String(`0x${method.publicKeyHex}`);
-            if (publiKeyUtf8 === signedJWT) {
-                const payload = publiKeyUtf8.split('.')[1];
-                const payloadJSON = JSON.parse(ethers_1.ethers.utils.toUtf8String(ethers_1.ethers.utils.base64.decode(payload)));
-                hexPrivateClaimSpan.innerHTML = JSON.stringify(payloadJSON.privateClaim);
-                publicKeyHexSpan.innerHTML = JSON.stringify(method.publicKeyHex);
-                hexStringSpan.innerHTML = publiKeyUtf8;
-                subjectValidatedSpan.innerHTML = "Found Matching Public Key";
-            }
-        }
-    });
-}
-;
 function verifyIssuerDelegateSigner() {
     return __awaiter(this, void 0, void 0, function* () {
         // Get the Metamask configured chainId
         const chainNameOrId = (yield signer_1.provider.getNetwork()).chainId;
-        // Process the accounts
+        // Wrap the audience address to enable calling of verify method
         const audienceDid = new ethr_did_1.EthrDID({ identifier: audienceAddress, provider: signer_1.provider, chainNameOrId });
+        // Utilise ethr-did to verify
         const JWTVerified = yield audienceDid.verifyJWT(signedJWT, didResolver);
         console.log(`Verify JWT:`);
         console.debug(JWTVerified);

@@ -10,9 +10,6 @@
     <a href="/">
       <button class="issuerApp">Issuer App</button>
     </a>
-    <a href="/subject">
-      <button class="subjectApp">Subject App</button>
-    </a>
     <a href="/audience">
       <button class="audienceApp">Audience App</button>
     </a>
@@ -53,15 +50,20 @@
         </form>
         <h3>Issuer DID: <span id="issuerDID"></span></h3>
     <hr>
+      <h2>Create Signing Delegate</h2>
+      <ul>
+        <li>Create a signing delegate for the connected account</li>
+      </ul>
+      <button id="createDelegate">Create Delegate</button>
+      <h3>Delegate Signer Account: <span id="delegateSigner"></span></h3>
+      <h3>Delegate Signer Identifier: <span id="delegateSignerIdentifier"></span></h3>
+    <hr>
       <h2>Sign JWT Token</h2>
         <ul>
-          <li>Create a signing delegate for the connected account</li>
-          <li>Sign the message with the delegate</li>
+          <li>Sign the message with the updated Issuer DID</li>
         </ul>
         <button id="signJWT">Sign JWT</button>
         <h3>Connected Metamask Account: <span id="connectedMetamaskAccount"></span></h3>
-        <h3>Delegate Signer Account: <span id="delegateSigner"></span></h3>
-        <h3>Delegate Signer Identifier: <span id="delegateSignerIdentifier"></span></h3>
         <h3>Signed JWT: <span id="signedJWT"></span></h3>
     <script src="javascripts/issuerBundle.js"></script>
   </body>
